@@ -22,7 +22,7 @@ namespace Lykke.Snow.AuditService.Tests
         [Fact]
         public void CheckRoutesInControllersTest()
         {
-            var clientInterface = typeof(IAuditServiceClient);
+            var clientInterface = typeof(IAuditServiceApi);
 
             var apiInterfaces = clientInterface
                 .GetProperties()

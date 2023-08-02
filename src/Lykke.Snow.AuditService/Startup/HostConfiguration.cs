@@ -4,7 +4,6 @@
 using System;
 using System.Reflection;
 using System.Runtime.InteropServices;
-
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using Lykke.SettingsReader;

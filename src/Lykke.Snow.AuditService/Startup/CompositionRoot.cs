@@ -46,8 +46,6 @@ namespace Lykke.Snow.AuditService.Startup
                 })
                 .AddSwaggerGenNewtonsoftSupport();
 
-            services.AddMemoryCache();
-
             return services;
         }
 

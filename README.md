@@ -47,7 +47,7 @@ Settings schema is.
             "ConnectionString": ""
         },
         "AuditServiceClient": {
-            "Url": "http://audit-service.mt.svc.cluster.local",
+            "ServiceUrl": "http://audit-service.mt.svc.cluster.local",
             "ApiKey": ""
         }
     }
