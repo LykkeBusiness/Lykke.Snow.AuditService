@@ -6,4 +6,7 @@
     <Nullable>enable</Nullable>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Lykke.MarginTrading.BackendSnow.Contracts" Version="1.53.0" />
+  </ItemGroup>
 </Project>

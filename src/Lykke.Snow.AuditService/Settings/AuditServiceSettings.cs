@@ -13,5 +13,6 @@ namespace Lykke.Snow.AuditService.Settings
         
         [Optional, CanBeNull]
         public ClientSettings? AuditServiceClient { get; set; }
+        public SubscribersSettings? Subscribers { get; set; }
     }
 }
