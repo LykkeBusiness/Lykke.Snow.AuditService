@@ -15,6 +15,7 @@ namespace Lykke.Snow.AuditService.Settings
 
         public string? QueueName { get; set; }
 
+        [AmqpCheck]
         public string? ConnectionString { get; set; }
 
         public static implicit operator RabbitMqSubscriptionSettings(SubscriptionSettings boSettings)
