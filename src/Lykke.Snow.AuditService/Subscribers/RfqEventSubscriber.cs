@@ -37,7 +37,7 @@ namespace Lykke.Snow.AuditService.Subscribers
             _subscriber = new RabbitMqPullingSubscriber<RfqEvent>(
                   _loggerFactory.CreateLogger<RabbitMqPullingSubscriber<RfqEvent>>(),
                   _settings)
-                  .SetMessageDeserializer(new MessagePackMessageDeserializer<RfqEvent>())
+                  .SetMessageDeserializer(new JsonMessageDeserializer<RfqEvent>())
                   .SetMessageReadStrategy(new MessageReadWithTemporaryQueueStrategy())
                   .Subscribe(ProcessMessageAsync)
                   .Start();

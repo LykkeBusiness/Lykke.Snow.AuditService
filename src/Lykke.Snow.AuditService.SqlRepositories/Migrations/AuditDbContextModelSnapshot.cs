@@ -23,7 +23,7 @@ namespace Lykke.Snow.AuditService.SqlRepositories.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
 
-            modelBuilder.Entity("Lykke.Snow.AuditService.SqlRepositories.Entities.AuditEvent", b =>
+            modelBuilder.Entity("Lykke.Snow.AuditService.SqlRepositories.Entities.AuditEventEntity", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
@@ -35,10 +35,10 @@ namespace Lykke.Snow.AuditService.SqlRepositories.Migrations
 
                     b.Property<string>("ActionTypeDetails")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
 
                     b.Property<string>("CorporateActionsId")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("CorrelationId")
@@ -46,7 +46,6 @@ namespace Lykke.Snow.AuditService.SqlRepositories.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("DataDiff")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("DataReference")
@@ -63,7 +62,6 @@ namespace Lykke.Snow.AuditService.SqlRepositories.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Username")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");

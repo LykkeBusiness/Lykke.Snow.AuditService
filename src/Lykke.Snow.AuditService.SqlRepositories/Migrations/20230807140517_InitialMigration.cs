@@ -20,13 +20,13 @@ namespace Lykke.Snow.AuditService.SqlRepositories.Migrations
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Timestamp = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CorrelationId = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CorporateActionsId = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Username = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CorporateActionsId = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Username = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ActionType = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
-                    ActionTypeDetails = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ActionTypeDetails = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
                     DataType = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
                     DataReference = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
-                    DataDiff = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    DataDiff = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
