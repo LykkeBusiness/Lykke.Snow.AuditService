@@ -33,6 +33,10 @@ namespace Lykke.Snow.AuditService.Modules
             builder.RegisterType<RfqAuditTrailService>()
                 .As<IRfqAuditTrailService>()
                 .SingleInstance();
+
+            builder.RegisterType<ObjectDiffService>()
+                .As<IObjectDiffService>()
+                .SingleInstance();
         }
     }
 }

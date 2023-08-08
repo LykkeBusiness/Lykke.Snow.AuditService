@@ -1,6 +1,5 @@
 using System.Threading.Tasks;
 using Common;
-using JsonDiffPatchDotNet;
 using Lykke.Snow.Audit;
 using Lykke.Snow.AuditService.Domain.Enum;
 using Lykke.Snow.AuditService.Domain.Exceptions;
@@ -15,12 +14,32 @@ namespace Lykke.Snow.AuditService.DomainServices.Services
     {
         private readonly IAuditEventRepository _auditEventRepository;
         private readonly IAuditObjectStateRepository _auditObjectStateRepository;
+        private readonly IObjectDiffService _objectDiffService;
 
-        public RfqAuditTrailService(IAuditEventRepository auditEventRepository, 
-            IAuditObjectStateRepository auditObjectStateRepository)
+        public RfqAuditTrailService(IAuditEventRepository auditEventRepository,
+            IAuditObjectStateRepository auditObjectStateRepository, 
+            IObjectDiffService objectDiffService)
         {
             _auditEventRepository = auditEventRepository;
             _auditObjectStateRepository = auditObjectStateRepository;
+            _objectDiffService = objectDiffService;
+        }
+
+        public AuditModel<AuditDataType> GetAuditEvent(RfqEvent rfqEvent, string jsonDiff)
+        {
+            var auditEvent = new AuditModel<AuditDataType>()
+            {
+                Timestamp = rfqEvent.RfqSnapshot.LastModified,
+                CorrelationId = rfqEvent.RfqSnapshot.CausationOperationId,
+                UserName = rfqEvent.RfqSnapshot.CreatedBy,
+                Type = rfqEvent.EventType == RfqEventTypeContract.New ? AuditEventType.Creation : AuditEventType.Edition,
+                ActionTypeDetails = rfqEvent.RfqSnapshot.State.ToString(),
+                DataType = AuditDataType.Rfq,
+                DataReference = rfqEvent.RfqSnapshot.Id,
+                DataDiff = jsonDiff
+            };
+
+            return auditEvent;
         }
 
         public async Task ProcessRfqEvent(RfqEvent rfqEvent)
@@ -32,23 +51,9 @@ namespace Lykke.Snow.AuditService.DomainServices.Services
 
                 await _auditObjectStateRepository.AddOrUpdate(auditObjectState);
 
-                var oldStateJson = "{}";
-                var newStateJson = rfqEvent.RfqSnapshot.ToJson();
+                var diff = _objectDiffService.GenerateNewJsonDiff(rfqEvent.RfqSnapshot);
 
-                var jdp = new JsonDiffPatch();
-                var jsonDiff = jdp.Diff(oldStateJson, newStateJson);
-
-                var auditEvent = new AuditModel<AuditDataType>()
-                {
-                    Timestamp = rfqEvent.RfqSnapshot.LastModified,
-                    CorrelationId = rfqEvent.RfqSnapshot.CausationOperationId,
-                    UserName = rfqEvent.RfqSnapshot.CreatedBy,
-                    Type = AuditEventType.Creation,
-                    ActionTypeDetails = rfqEvent.RfqSnapshot.State.ToString(),
-                    DataType = AuditDataType.Rfq,
-                    DataReference = rfqEvent.RfqSnapshot.Id,
-                    DataDiff = jsonDiff
-                };
+                var auditEvent = GetAuditEvent(rfqEvent, diff);
 
                 // TODO: is it idempotent? what happens if event is consumed more than once?
                 await _auditEventRepository.AddAsync(auditEvent);
@@ -62,23 +67,9 @@ namespace Lykke.Snow.AuditService.DomainServices.Services
                     throw new AuditObjectNotFoundException(dataType: AuditDataType.Rfq.ToString(), dataReference: rfqEvent.RfqSnapshot.Id);
                 }
 
-                var oldStateJson = existingObject.StateInJson;
-                var newStateJson = rfqEvent.RfqSnapshot.ToJson();
+                var diff = _objectDiffService.GetJsonDiff(existingObject.StateInJson, rfqEvent.RfqSnapshot.ToJson());
 
-                var jdp = new JsonDiffPatch();
-                var jsonDiff = jdp.Diff(oldStateJson, newStateJson);
-
-                var auditEvent = new AuditModel<AuditDataType>()
-                {
-                    Timestamp = rfqEvent.RfqSnapshot.LastModified,
-                    CorrelationId = rfqEvent.RfqSnapshot.CausationOperationId,
-                    UserName = rfqEvent.RfqSnapshot.CreatedBy,
-                    Type = AuditEventType.Edition,
-                    ActionTypeDetails = rfqEvent.RfqSnapshot.State.ToString(),
-                    DataType = AuditDataType.Rfq,
-                    DataReference = rfqEvent.RfqSnapshot.Id,
-                    DataDiff = jsonDiff
-                };
+                var auditEvent = GetAuditEvent(rfqEvent, diff);
 
                 var auditObjectState = new AuditObjectState(dataType: AuditDataType.Rfq, dataReference: rfqEvent.RfqSnapshot.Id,
                     stateInJson: rfqEvent.RfqSnapshot.ToJson(), lastModified: rfqEvent.RfqSnapshot.LastModified);
