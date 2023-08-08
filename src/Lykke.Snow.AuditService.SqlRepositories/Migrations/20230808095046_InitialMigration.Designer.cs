@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Lykke.Snow.AuditService.SqlRepositories.Migrations
 {
     [DbContext(typeof(AuditDbContext))]
-    [Migration("20230807140517_InitialMigration")]
+    [Migration("20230808095046_InitialMigration")]
     partial class InitialMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -27,21 +27,16 @@ namespace Lykke.Snow.AuditService.SqlRepositories.Migrations
 
             modelBuilder.Entity("Lykke.Snow.AuditService.SqlRepositories.Entities.AuditEventEntity", b =>
                 {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
 
-                    b.Property<string>("ActionType")
-                        .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<string>("ActionTypeDetails")
                         .IsRequired()
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
-
-                    b.Property<string>("CorporateActionsId")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("CorrelationId")
                         .IsRequired()
@@ -57,13 +52,18 @@ namespace Lykke.Snow.AuditService.SqlRepositories.Migrations
 
                     b.Property<string>("DataType")
                         .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<DateTime>("Timestamp")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("Username")
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("UserName")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");

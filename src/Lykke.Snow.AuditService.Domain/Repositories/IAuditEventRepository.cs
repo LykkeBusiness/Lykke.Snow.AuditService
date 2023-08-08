@@ -1,11 +1,11 @@
 using System.Threading.Tasks;
-
-using Lykke.Snow.AuditService.Domain.Model;
+using Lykke.Snow.Audit;
 
 namespace Lykke.Snow.AuditService.Domain.Repositories
 {
     public interface IAuditEventRepository
     {
-        Task AddAsync(AuditEvent auditEvent);
+        Task<AuditModel<T>> GetAsync<T>(string dataReference);
+        Task AddAsync<T>(AuditModel<T> auditEvent);
     }
 }

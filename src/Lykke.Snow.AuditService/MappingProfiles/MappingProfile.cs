@@ -1,6 +1,6 @@
 using AutoMapper;
-
-using Lykke.Snow.AuditService.Domain.Model;
+using Lykke.Snow.Audit;
+using Lykke.Snow.AuditService.Domain.Enum;
 using Lykke.Snow.AuditService.SqlRepositories.Entities;
 
 namespace Lykke.Snow.AuditService.MappingProfiles
@@ -9,7 +9,7 @@ namespace Lykke.Snow.AuditService.MappingProfiles
     {
         public MappingProfile()
         {
-            CreateMap<AuditEvent, AuditEventEntity>()
+            CreateMap<AuditModel<AuditDataType>, AuditEventEntity>()
                 .ReverseMap();
         }
     }

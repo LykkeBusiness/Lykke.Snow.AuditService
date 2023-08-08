@@ -17,14 +17,14 @@ namespace Lykke.Snow.AuditService.SqlRepositories.Migrations
                 schema: "audit",
                 columns: table => new
                 {
-                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     Timestamp = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CorrelationId = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CorporateActionsId = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Username = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ActionType = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
+                    UserName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Type = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     ActionTypeDetails = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
-                    DataType = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
+                    DataType = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     DataReference = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
                     DataDiff = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
