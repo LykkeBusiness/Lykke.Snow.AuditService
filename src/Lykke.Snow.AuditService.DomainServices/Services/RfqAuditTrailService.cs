@@ -3,6 +3,8 @@ using Common;
 using JsonDiffPatchDotNet;
 using Lykke.Snow.Audit;
 using Lykke.Snow.AuditService.Domain.Enum;
+using Lykke.Snow.AuditService.Domain.Exceptions;
+using Lykke.Snow.AuditService.Domain.Model;
 using Lykke.Snow.AuditService.Domain.Repositories;
 using Lykke.Snow.AuditService.Domain.Services;
 using MarginTrading.Backend.Contracts.Events;
@@ -12,16 +14,24 @@ namespace Lykke.Snow.AuditService.DomainServices.Services
     public class RfqAuditTrailService : IRfqAuditTrailService
     {
         private readonly IAuditEventRepository _auditEventRepository;
+        private readonly IAuditObjectStateRepository _auditObjectStateRepository;
 
-        public RfqAuditTrailService(IAuditEventRepository auditEventRepository)
+        public RfqAuditTrailService(IAuditEventRepository auditEventRepository, 
+            IAuditObjectStateRepository auditObjectStateRepository)
         {
             _auditEventRepository = auditEventRepository;
+            _auditObjectStateRepository = auditObjectStateRepository;
         }
 
         public async Task ProcessRfqEvent(RfqEvent rfqEvent)
         {
             if(rfqEvent.EventType == RfqEventTypeContract.New)
             {
+                var auditObjectState = new AuditObjectState(dataType: AuditDataType.Rfq, dataReference: rfqEvent.RfqSnapshot.Id,
+                    stateInJson: rfqEvent.RfqSnapshot.ToJson(), lastModified: rfqEvent.RfqSnapshot.LastModified);
+
+                await _auditObjectStateRepository.AddOrUpdate(auditObjectState);
+
                 var oldStateJson = "{}";
                 var newStateJson = rfqEvent.RfqSnapshot.ToJson();
 
@@ -45,9 +55,14 @@ namespace Lykke.Snow.AuditService.DomainServices.Services
             }
             else if(rfqEvent.EventType == RfqEventTypeContract.Update)
             {
-                // TODO: load the 'last' state of the event
-                // 
-                var oldStateJson = "{}";
+                var existingObject = await _auditObjectStateRepository.GetByDataReferenceAsync(dataType: AuditDataType.Rfq, dataReference: rfqEvent.RfqSnapshot.Id);
+                
+                if(existingObject == null)
+                {
+                    throw new AuditObjectNotFoundException(dataType: AuditDataType.Rfq.ToString(), dataReference: rfqEvent.RfqSnapshot.Id);
+                }
+
+                var oldStateJson = existingObject.StateInJson;
                 var newStateJson = rfqEvent.RfqSnapshot.ToJson();
 
                 var jdp = new JsonDiffPatch();
@@ -64,6 +79,11 @@ namespace Lykke.Snow.AuditService.DomainServices.Services
                     DataReference = rfqEvent.RfqSnapshot.Id,
                     DataDiff = jsonDiff
                 };
+
+                var auditObjectState = new AuditObjectState(dataType: AuditDataType.Rfq, dataReference: rfqEvent.RfqSnapshot.Id,
+                    stateInJson: rfqEvent.RfqSnapshot.ToJson(), lastModified: rfqEvent.RfqSnapshot.LastModified);
+
+                await _auditObjectStateRepository.AddOrUpdate(auditObjectState);
 
                 await _auditEventRepository.AddAsync(auditEvent);
             }

@@ -27,6 +27,7 @@ namespace Lykke.Snow.AuditService.SqlRepositories
         }
 
         public DbSet<AuditEventEntity> Events => Set<AuditEventEntity>();
+        public DbSet<AuditObjectStateEntity> AuditObjectStates => Set<AuditObjectStateEntity>();
 
 
         protected override void OnLykkeModelCreating(ModelBuilder modelBuilder)

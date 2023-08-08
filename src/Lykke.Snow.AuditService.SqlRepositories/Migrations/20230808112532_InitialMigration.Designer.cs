@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Lykke.Snow.AuditService.SqlRepositories.Migrations
 {
     [DbContext(typeof(AuditDbContext))]
-    [Migration("20230808095046_InitialMigration")]
+    [Migration("20230808112532_InitialMigration")]
     partial class InitialMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -69,6 +69,37 @@ namespace Lykke.Snow.AuditService.SqlRepositories.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Events", "audit");
+                });
+
+            modelBuilder.Entity("Lykke.Snow.AuditService.SqlRepositories.Entities.AuditObjectStateEntity", b =>
+                {
+                    b.Property<int>("Oid")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Oid"), 1L, 1);
+
+                    b.Property<string>("DataReference")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("DataType")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime>("LastModified")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("StateInJson")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Oid");
+
+                    b.HasIndex("DataType", "DataReference")
+                        .IsUnique();
+
+                    b.ToTable("AuditObjectStates", "audit");
                 });
 #pragma warning restore 612, 618
         }
