@@ -32,4 +32,8 @@
   <ItemGroup>
     <Folder Include="Models\" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Lykke.Snow.Audit\src\Lykke.Snow.Audit\Lykke.Snow.Audit.csproj" />
+    <ProjectReference Include="..\..\src\Lykke.Snow.AuditService.Domain\Lykke.Snow.AuditService.Domain.csproj" />
+  </ItemGroup>
 </Project>

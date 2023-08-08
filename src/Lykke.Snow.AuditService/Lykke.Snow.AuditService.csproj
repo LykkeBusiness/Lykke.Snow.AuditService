@@ -16,6 +16,7 @@
     <ProjectReference Include="..\Lykke.Snow.AuditService.Domain\Lykke.Snow.AuditService.Domain.csproj" />
     <ProjectReference Include="..\Lykke.Snow.AuditService.DomainServices\Lykke.Snow.AuditService.DomainServices.csproj" />
     <ProjectReference Include="..\Lykke.Snow.AuditService.SqlRepositories\Lykke.Snow.AuditService.SqlRepositories.csproj" />
+    <ProjectReference Include="..\..\client\Lykke.Snow.AuditService.Client\Lykke.Snow.AuditService.Client.csproj" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="8.0.0" />
