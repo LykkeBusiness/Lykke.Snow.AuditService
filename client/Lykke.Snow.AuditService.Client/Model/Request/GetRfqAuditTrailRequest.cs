@@ -1,7 +1,5 @@
 using System;
-
-using Lykke.Snow.Audit;
-
+using Lykke.Snow.AuditService.Domain.Enum.ActionTypes;
 using MarginTrading.Backend.Contracts.Rfq;
 
 namespace Lykke.Snow.AuditService.Client.Model.Request
@@ -29,7 +27,7 @@ namespace Lykke.Snow.AuditService.Client.Model.Request
         /// <summary>
         /// Action type for the audit events
         /// </summary>
-        public AuditEventType? ActionType { get; set; }
+        public RfqActionType? ActionType { get; set; }
         
         /// <summary>
         /// Rfq status

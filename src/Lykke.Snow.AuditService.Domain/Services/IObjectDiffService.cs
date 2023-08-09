@@ -1,3 +1,8 @@
+using System;
+using System.Linq.Expressions;
+
+using Lykke.Snow.Audit.Abstractions;
+
 namespace Lykke.Snow.AuditService.Domain.Services
 {
     public interface IObjectDiffService
@@ -12,5 +17,6 @@ namespace Lykke.Snow.AuditService.Domain.Services
         /// <param name="newState"></param>
         /// <returns></returns>
         string GenerateNewJsonDiff<T>(T newState);
+        IAuditModel<T> FilterBasedOnJsonDiff<T>(Expression<Func<T>> expr);
     }
 }

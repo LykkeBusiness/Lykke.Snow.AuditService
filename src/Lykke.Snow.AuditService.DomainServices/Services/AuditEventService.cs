@@ -18,11 +18,12 @@ namespace Lykke.Snow.AuditService.DomainServices.Services
             _auditEventRepository = auditEventRepository;
         }
 
-        public Task<PaginatedResponse<IAuditModel<AuditDataType>>> GetAll(AuditTrailFilter<AuditDataType> filter, int? skip, int? take)
+        public async Task<PaginatedResponse<IAuditModel<AuditDataType>>> GetAll(AuditTrailFilter<AuditDataType> filter, int? skip, int? take)
         {
             (skip, take) = PaginationUtils.ValidateSkipAndTake(skip, take);
 
-            return _auditEventRepository.GetAllAsync(filter, skip, take);
+            var results = await _auditEventRepository.GetAllAsync(filter, skip, take);
+            return null!;
         }
     }
 }

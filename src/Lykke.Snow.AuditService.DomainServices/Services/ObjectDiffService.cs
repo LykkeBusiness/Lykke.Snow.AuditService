@@ -1,5 +1,9 @@
+using System.Linq.Expressions;
+
 using Common;
 using JsonDiffPatchDotNet;
+
+using Lykke.Snow.Audit.Abstractions;
 using Lykke.Snow.AuditService.Domain.Services;
 
 namespace Lykke.Snow.AuditService.DomainServices.Services
@@ -35,5 +39,11 @@ namespace Lykke.Snow.AuditService.DomainServices.Services
 
             return jsonDiff;
         }
+
+        public IAuditModel<T> FilterBasedOnJsonDiff<T>(Expression<System.Func<T>> expr)
+        {
+            throw new System.NotImplementedException();
+        }
+
     }
 }
