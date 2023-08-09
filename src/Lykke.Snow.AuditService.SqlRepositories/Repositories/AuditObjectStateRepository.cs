@@ -21,7 +21,7 @@ namespace Lykke.Snow.AuditService.SqlRepositories.Repositories
         private readonly ConcurrentDictionary<(string dataType, string dataReference), SemaphoreSlim> _locks =
             new ConcurrentDictionary<(string dataType, string dataReference), SemaphoreSlim>();
 
-        public AuditObjectStateRepository(Common.MsSql.IDbContextFactory<AuditDbContext> contextFactory, IMapper mapper)
+        public AuditObjectStateRepository(Lykke.Common.MsSql.IDbContextFactory<AuditDbContext> contextFactory, IMapper mapper)
         {
             _contextFactory = contextFactory;
             _mapper = mapper;
