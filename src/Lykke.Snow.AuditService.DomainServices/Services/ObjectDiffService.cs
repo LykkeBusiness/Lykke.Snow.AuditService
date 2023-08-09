@@ -1,10 +1,12 @@
-using System.Linq.Expressions;
-
+using System.Collections.Generic;
 using Common;
 using JsonDiffPatchDotNet;
-
+using Lykke.Snow.Audit;
 using Lykke.Snow.Audit.Abstractions;
+using Lykke.Snow.AuditService.Domain.Enum;
 using Lykke.Snow.AuditService.Domain.Services;
+
+using Newtonsoft.Json.Linq;
 
 namespace Lykke.Snow.AuditService.DomainServices.Services
 {
@@ -40,9 +42,28 @@ namespace Lykke.Snow.AuditService.DomainServices.Services
             return jsonDiff;
         }
 
-        public IAuditModel<T> FilterBasedOnJsonDiff<T>(Expression<System.Func<T>> expr)
+        public IEnumerable<IAuditModel<AuditDataType>> FilterBasedOnJsonDiff(IList<IAuditModel<AuditDataType>> auditEvents, JsonDiffFilter jsonDiffFilter)
         {
-            throw new System.NotImplementedException();
+            foreach(var auditEvent in auditEvents)
+            {
+                var diff = auditEvent.DataDiff;
+
+                JObject jobject = JObject.Parse(auditEvent.DataDiff);
+
+                var properties = jobject.Properties();
+                
+                foreach(JProperty property in properties)
+                {
+                    if(property.Name != jsonDiffFilter.PropertyName)
+                        continue;
+
+                    if(jsonDiffFilter.Value == null)
+                        yield return auditEvent;
+                        
+                    if(property.Value.ToString() == jsonDiffFilter.Value)
+                        yield return auditEvent;
+                }
+            }
         }
 
     }

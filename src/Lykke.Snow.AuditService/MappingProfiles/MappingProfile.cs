@@ -19,7 +19,7 @@ namespace Lykke.Snow.AuditService.MappingProfiles
 
             CreateMap<GetRfqAuditTrailRequest, AuditTrailFilter<AuditDataType>>()
                 .ForMember(dest => dest.DataTypes, opt => opt.MapFrom(src => new AuditDataType[] { AuditDataType.Rfq }))
-                .ForMember(dest => dest.ActionTypeDetails, opt => opt.MapFrom(src => src.Status));
+                .ForMember(dest => dest.ActionTypeDetails, opt => opt.MapFrom(src => src.State));
         }
     }
 }

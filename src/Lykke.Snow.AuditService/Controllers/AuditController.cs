@@ -40,11 +40,13 @@ namespace Lykke.Snow.AuditService.Controllers
         {
             var filter = _mapper.Map<AuditTrailFilter<AuditDataType>>(request);
 
-            var result = await _auditEventService.GetAll(filter, skip, take);
-            
-            //if(request.ActionType == RfqActionType.StatusChanged)
-            //    _objectDiffService.FilterBasedOnJsonDiff(result, )
+            JsonDiffFilter jsonDiffFilter = null!;
 
+            if (request.ActionType == AuditEventType.Edition && request.RefinedEditActionType == RfqRefinedEditActionType.StatusChanged)
+                jsonDiffFilter = new JsonDiffFilter() { PropertyName = nameof(request.State) };
+
+            var result = await _auditEventService.GetAll(filter, jsonDiffFilter, skip, take);
+            
             return result;
         }
     }
