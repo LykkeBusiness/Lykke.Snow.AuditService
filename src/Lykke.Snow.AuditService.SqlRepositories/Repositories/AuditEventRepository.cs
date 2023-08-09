@@ -2,14 +2,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
-using Lykke.Contracts.Responses;
 using Lykke.Snow.Audit;
 using Lykke.Snow.Audit.Abstractions;
 using Lykke.Snow.AuditService.Domain.Enum;
 using Lykke.Snow.AuditService.Domain.Repositories;
 using Lykke.Snow.AuditService.SqlRepositories.Entities;
-using Lykke.Snow.Common;
-
 using Microsoft.EntityFrameworkCore;
 
 namespace Lykke.Snow.AuditService.SqlRepositories.Repositories
@@ -34,9 +31,9 @@ namespace Lykke.Snow.AuditService.SqlRepositories.Repositories
             await context.SaveChangesAsync();
         }
 
-        public async Task<PaginatedResponse<IAuditModel<AuditDataType>>> GetAllAsync(AuditTrailFilter<AuditDataType> filter, int? skip, int? take)
+        public async Task<IList<IAuditModel<AuditDataType>>> GetAllAsync(AuditTrailFilter<AuditDataType> filter)
         {
-            (skip, take) = PaginationUtils.ValidateSkipAndTake(skip, take);
+           //(skip, take) = PaginationUtils.ValidateSkipAndTake(skip, take);
 
             using (var context = _contextFactory.CreateDataContext())
             {
@@ -49,19 +46,19 @@ namespace Lykke.Snow.AuditService.SqlRepositories.Repositories
 
                 query = query.OrderByDescending(x => x.Timestamp);
 
-                if (skip.HasValue && take.HasValue)
-                    query = query.Skip(skip.Value).Take(take.Value);
+                //if (skip.HasValue && take.HasValue)
+                //    query = query.Skip(skip.Value).Take(take.Value);
 
                 var contents = await query.ToListAsync();
 
-                var result = new PaginatedResponse<IAuditModel<AuditDataType>>(
-                    contents: contents as IReadOnlyList<IAuditModel<AuditDataType>>,
-                    start: skip ?? 0,
-                    size: contents.Count,
-                    totalSize: total
-                );
+                //var result = new PaginatedResponse<IAuditModel<AuditDataType>>(
+                //    contents: contents as IReadOnlyList<IAuditModel<AuditDataType>>,
+                //    start: skip ?? 0,
+                //    size: contents.Count,
+                //    totalSize: total
+                //);
 
-                return result;
+                return contents;
             }
         }
     }
