@@ -18,13 +18,13 @@ namespace Lykke.Snow.AuditService.Controllers
     public class AuditController : ControllerBase
     {
         private readonly IMapper _mapper;
-        private readonly IAuditEventService _auditService;
+        private readonly IAuditEventService _auditEventService;
 
         public AuditController(IMapper mapper, 
-            IAuditEventService auditService)
+            IAuditEventService auditEventService)
         {
             _mapper = mapper;
-            _auditService = auditService;
+            _auditEventService = auditEventService;
         }
 
         [HttpGet("rfq")]
@@ -33,7 +33,7 @@ namespace Lykke.Snow.AuditService.Controllers
         {
             var filter = _mapper.Map<AuditTrailFilter<AuditDataType>>(request);
 
-            var result = await _auditService.GetAll(filter, skip, take);
+            var result = await _auditEventService.GetAll(filter, skip, take);
 
             return result;
         }
