@@ -31,7 +31,7 @@ namespace Lykke.Snow.AuditService.SqlRepositories.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<string>("ActionTypeDetails")
+                    b.Property<string>("AuditEventTypeDetails")
                         .IsRequired()
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");

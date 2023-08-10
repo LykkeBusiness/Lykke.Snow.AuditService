@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Lykke.Snow.AuditService.SqlRepositories.Migrations
 {
     [DbContext(typeof(AuditDbContext))]
-    [Migration("20230808112532_InitialMigration")]
+    [Migration("20230810135458_InitialMigration")]
     partial class InitialMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -33,7 +33,7 @@ namespace Lykke.Snow.AuditService.SqlRepositories.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<string>("ActionTypeDetails")
+                    b.Property<string>("AuditEventTypeDetails")
                         .IsRequired()
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
