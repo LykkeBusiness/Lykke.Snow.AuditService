@@ -9,7 +9,6 @@ using Lykke.Snow.AuditService.Domain.Services;
 using MarginTrading.Backend.Contracts.Events;
 using MarginTrading.Backend.Contracts.Rfq;
 
-
 namespace Lykke.Snow.AuditService.DomainServices.Services
 {
     public class RfqAuditTrailService : IRfqAuditTrailService
@@ -27,7 +26,7 @@ namespace Lykke.Snow.AuditService.DomainServices.Services
             _objectDiffService = objectDiffService;
         }
 
-        public AuditModel<AuditDataType> GetAuditEvent(RfqEvent rfqEvent, string jsonDiff)
+        public string GetEventUsername(RfqEvent rfqEvent)
         {
             string username = string.Empty;
             
@@ -36,6 +35,13 @@ namespace Lykke.Snow.AuditService.DomainServices.Services
             else
                 username = "SYSTEM";
                 
+            return username;
+        }
+
+        public AuditModel<AuditDataType> GetAuditEvent(RfqEvent rfqEvent, string jsonDiff)
+        {
+            var username = GetEventUsername(rfqEvent);
+
             var auditEvent = new AuditModel<AuditDataType>()
             {
                 Timestamp = rfqEvent.RfqSnapshot.LastModified,
@@ -60,7 +66,7 @@ namespace Lykke.Snow.AuditService.DomainServices.Services
 
                 await _auditObjectStateRepository.AddOrUpdate(auditObjectState);
 
-                var diff = _objectDiffService.GenerateNewJsonDiff(rfqEvent.RfqSnapshot);
+                var diff = GetRfqJsonDiff(rfqEvent, existingObject: null);
 
                 var auditEvent = GetAuditEvent(rfqEvent, diff);
 
@@ -74,8 +80,8 @@ namespace Lykke.Snow.AuditService.DomainServices.Services
                 {
                     throw new AuditObjectNotFoundException(dataType: AuditDataType.Rfq.ToString(), dataReference: rfqEvent.RfqSnapshot.Id);
                 }
-
-                var diff = _objectDiffService.GetJsonDiff(existingObject.StateInJson, rfqEvent.RfqSnapshot.ToJson());
+                
+                var diff = GetRfqJsonDiff(rfqEvent, existingObject);
 
                 var auditEvent = GetAuditEvent(rfqEvent, diff);
 
@@ -86,6 +92,16 @@ namespace Lykke.Snow.AuditService.DomainServices.Services
 
                 await _auditEventRepository.AddAsync(auditEvent);
             }
+        }
+
+        public string GetRfqJsonDiff(RfqEvent rfqEvent, AuditObjectState? existingObject)
+        {
+            if(existingObject == null)
+                return _objectDiffService.GenerateNewJsonDiff(rfqEvent.RfqSnapshot);
+
+            var diff = _objectDiffService.GetJsonDiff(existingObject.StateInJson, rfqEvent.RfqSnapshot.ToJson());
+            
+            return diff;
         }
     }
 }
