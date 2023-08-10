@@ -4,7 +4,7 @@ using Lykke.Snow.Audit;
 using Lykke.Snow.AuditService.Domain.Enum.ActionTypes;
 using MarginTrading.Backend.Contracts.Rfq;
 
-namespace Lykke.Snow.AuditService.Client.Model.Request
+namespace Lykke.Snow.AuditService.Client.Model.Request.Rfq
 {
     /// <summary>
     /// Request class for listing RFQ audit events.

@@ -46,9 +46,22 @@ Settings schema is.
         "Db": {
             "ConnectionString": ""
         },
+        "Subscribers": {
+            "RfqEventSubscriber": {
+              "ConnectionString": "",
+              "QueueName": "",
+              "RoutingKey": "",
+              "ExchangeName": "",
+              "IsDurable": false
+            }
+        },
         "AuditServiceClient": {
             "ServiceUrl": "http://audit-service.mt.svc.cluster.local",
             "ApiKey": ""
+        },
+        "CsvExportSettings": {
+            "Delimiter": ",",
+            "ShouldOutputHeader": true
         }
     }
 }

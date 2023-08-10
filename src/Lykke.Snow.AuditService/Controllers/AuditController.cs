@@ -5,9 +5,12 @@ using Lykke.Contracts.Responses;
 using Lykke.Snow.Audit;
 using Lykke.Snow.Audit.Abstractions;
 using Lykke.Snow.AuditService.Client.Model.Request;
+using Lykke.Snow.AuditService.Client.Model.Request.Rfq;
 using Lykke.Snow.AuditService.Domain.Enum;
 using Lykke.Snow.AuditService.Domain.Enum.ActionTypes;
 using Lykke.Snow.AuditService.Domain.Services;
+using Lykke.Snow.AuditService.Settings;
+using Lykke.Snow.Common.Startup;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -20,15 +23,15 @@ namespace Lykke.Snow.AuditService.Controllers
     {
         private readonly IMapper _mapper;
         private readonly IAuditEventService _auditEventService;
-        private readonly IObjectDiffService _objectDiffService;
+        private readonly AuditServiceSettings _auditServiceSettings;
 
         public AuditController(IMapper mapper,
-            IAuditEventService auditEventService, 
-            IObjectDiffService objectDiffService)
+            IAuditEventService auditEventService,
+            AuditServiceSettings auditServiceSettings)
         {
             _mapper = mapper;
             _auditEventService = auditEventService;
-            _objectDiffService = objectDiffService;
+            _auditServiceSettings = auditServiceSettings;
         }
 
         // Special filters for RFQ
@@ -48,6 +51,19 @@ namespace Lykke.Snow.AuditService.Controllers
             var result = await _auditEventService.GetAll(filter, jsonDiffFilter, skip, take);
             
             return result;
+        }
+
+        [HttpGet("csv")]
+        [ProducesResponseType((int)HttpStatusCode.OK)]
+        [ProducesResponseType((int)HttpStatusCode.Forbidden)]
+        [ProducesResponseType((int)HttpStatusCode.BadRequest)]
+        public async Task<IActionResult> Csv([FromQuery] ExportAuditEventsToCsvRequest request)
+        {
+            var result = await _auditEventService.GetAll(request.Filter ?? new AuditTrailFilter<AuditDataType>());
+
+            this.TrySetCsvSettings(_auditServiceSettings.CsvExportSettings.Delimiter, _auditServiceSettings.CsvExportSettings.ShouldOutputHeader);
+
+            return Ok(result.Contents);
         }
     }
 }
