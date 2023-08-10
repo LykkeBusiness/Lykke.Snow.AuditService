@@ -15,7 +15,7 @@ namespace Lykke.Snow.AuditService.Tests
     {
         public IEnumerator<object[]> GetEnumerator()
         {
-            yield return new object[] { new RfqEvent { RfqSnapshot = new RfqContract{} } };
+            yield return new object[] { new RfqEvent { RfqSnapshot = new RfqContract{}}, "SYSTEM" };
         }
 
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
@@ -23,11 +23,11 @@ namespace Lykke.Snow.AuditService.Tests
 
     public class RfqAuditTrailServiceTests
     {
-        [Theory]
-        [InlineData()]
-        public void GetEventUserName_ShouldReturnCorrectUsername_ForTheRfqEvent(RfqEvent rfqEvent, string expectedUsername)
-        {
-        }
+        //[Theory]
+        //[ClassData(typeof(RfqEventUsernameTestData))]
+        //public void GetEventUserName_ShouldReturnCorrectUsername_ForTheRfqEvent(RfqEvent rfqEvent, string expectedUsername)
+        //{
+        //}
 
         private RfqAuditTrailService CreateSut(IAuditEventRepository? auditEventRepositoryArg = null,
             IAuditObjectStateRepository? auditObjectStateRepositoryArg = null,

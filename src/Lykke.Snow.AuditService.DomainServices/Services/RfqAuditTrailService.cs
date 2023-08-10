@@ -48,7 +48,7 @@ namespace Lykke.Snow.AuditService.DomainServices.Services
                 CorrelationId = rfqEvent.RfqSnapshot.CausationOperationId,
                 UserName = username,
                 Type = rfqEvent.EventType == RfqEventTypeContract.New ? AuditEventType.Creation : AuditEventType.Edition,
-                ActionTypeDetails = rfqEvent.RfqSnapshot.State.ToString(),
+                AuditEventTypeDetails = rfqEvent.RfqSnapshot.State.ToString(),
                 DataType = AuditDataType.Rfq,
                 DataReference = rfqEvent.RfqSnapshot.Id,
                 DataDiff = jsonDiff

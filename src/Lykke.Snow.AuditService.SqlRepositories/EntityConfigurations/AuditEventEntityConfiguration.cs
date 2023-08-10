@@ -14,7 +14,7 @@ namespace Lykke.Snow.AuditService.SqlRepositories.EntityConfigurations
             builder.Property(x => x.CorrelationId).IsRequired();
             builder.Property(x => x.UserName).IsRequired(false);
             builder.Property(x => x.Type).HasConversion<string>().HasMaxLength(50).IsRequired();
-            builder.Property(x => x.ActionTypeDetails).HasMaxLength(200).IsRequired();
+            builder.Property(x => x.AuditEventTypeDetails).HasMaxLength(200).IsRequired();
             builder.Property(x => x.DataType).HasConversion<string>().HasMaxLength(100).IsRequired();
             builder.Property(x => x.DataReference).HasMaxLength(200).IsRequired();
             builder.Property(x => x.DataDiff).IsRequired(false);
