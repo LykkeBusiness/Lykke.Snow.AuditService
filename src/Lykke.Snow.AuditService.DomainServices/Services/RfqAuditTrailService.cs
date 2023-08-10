@@ -7,6 +7,8 @@ using Lykke.Snow.AuditService.Domain.Model;
 using Lykke.Snow.AuditService.Domain.Repositories;
 using Lykke.Snow.AuditService.Domain.Services;
 using MarginTrading.Backend.Contracts.Events;
+using MarginTrading.Backend.Contracts.Rfq;
+
 
 namespace Lykke.Snow.AuditService.DomainServices.Services
 {
@@ -27,18 +29,18 @@ namespace Lykke.Snow.AuditService.DomainServices.Services
 
         public AuditModel<AuditDataType> GetAuditEvent(RfqEvent rfqEvent, string jsonDiff)
         {
-        //    string username = "SYSTEM";
-        //    
-        //    if(rfqEvent.RfqSnapshot.OriginatorType == MarginTrading.Backend.Contracts.Rfq.RfqOriginatorType.Investor)
-        //        username = rfqEvent.RfqSnapshot.CreatedBy;
-        //        
-        //    if(rfqEvent.RfqSnapshot.State == MarginTrading.Backend.Contracts.Rfq.RfqOperationState.)
-        //
+            string username = string.Empty;
+            
+            if(rfqEvent.RfqSnapshot.OriginatorType == RfqOriginatorType.Investor || rfqEvent.RfqSnapshot.OriginatorType == RfqOriginatorType.OnBehalf)
+                username = rfqEvent.RfqSnapshot.CreatedBy;
+            else
+                username = "SYSTEM";
+                
             var auditEvent = new AuditModel<AuditDataType>()
             {
                 Timestamp = rfqEvent.RfqSnapshot.LastModified,
                 CorrelationId = rfqEvent.RfqSnapshot.CausationOperationId,
-                UserName = rfqEvent.RfqSnapshot.CreatedBy,
+                UserName = username,
                 Type = rfqEvent.EventType == RfqEventTypeContract.New ? AuditEventType.Creation : AuditEventType.Edition,
                 ActionTypeDetails = rfqEvent.RfqSnapshot.State.ToString(),
                 DataType = AuditDataType.Rfq,
