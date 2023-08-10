@@ -3,7 +3,6 @@ using Lykke.RabbitMqBroker;
 using Lykke.RabbitMqBroker.Subscriber;
 using Lykke.RabbitMqBroker.Subscriber.Deserializers;
 using Lykke.RabbitMqBroker.Subscriber.MessageReadStrategies;
-using Lykke.Snow.AuditService.Domain.Repositories;
 using Lykke.Snow.AuditService.Domain.Services;
 using Lykke.Snow.AuditService.Settings;
 using MarginTrading.Backend.Contracts.Events;
@@ -20,7 +19,6 @@ namespace Lykke.Snow.AuditService.Subscribers
 
         public RfqEventSubscriber(ILoggerFactory loggerFactory,
             SubscriptionSettings settings,
-            IAuditEventRepository auditEventRepository, 
             IRfqAuditTrailService rfqAuditTrailService)
         {
             _loggerFactory = loggerFactory;

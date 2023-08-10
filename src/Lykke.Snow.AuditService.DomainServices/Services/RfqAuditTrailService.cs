@@ -27,6 +27,13 @@ namespace Lykke.Snow.AuditService.DomainServices.Services
 
         public AuditModel<AuditDataType> GetAuditEvent(RfqEvent rfqEvent, string jsonDiff)
         {
+        //    string username = "SYSTEM";
+        //    
+        //    if(rfqEvent.RfqSnapshot.OriginatorType == MarginTrading.Backend.Contracts.Rfq.RfqOriginatorType.Investor)
+        //        username = rfqEvent.RfqSnapshot.CreatedBy;
+        //        
+        //    if(rfqEvent.RfqSnapshot.State == MarginTrading.Backend.Contracts.Rfq.RfqOperationState.)
+        //
             var auditEvent = new AuditModel<AuditDataType>()
             {
                 Timestamp = rfqEvent.RfqSnapshot.LastModified,
@@ -55,7 +62,6 @@ namespace Lykke.Snow.AuditService.DomainServices.Services
 
                 var auditEvent = GetAuditEvent(rfqEvent, diff);
 
-                // TODO: is it idempotent? what happens if event is consumed more than once?
                 await _auditEventRepository.AddAsync(auditEvent);
             }
             else if(rfqEvent.EventType == RfqEventTypeContract.Update)
