@@ -3,6 +3,8 @@ using Lykke.Contracts.Responses;
 using Lykke.Snow.Audit;
 using Lykke.Snow.Audit.Abstractions;
 using Lykke.Snow.AuditService.Domain.Enum;
+using Lykke.Snow.AuditService.Domain.Model;
+
 
 namespace Lykke.Snow.AuditService.Domain.Services
 {

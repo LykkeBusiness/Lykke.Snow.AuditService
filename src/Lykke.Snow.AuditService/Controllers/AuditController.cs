@@ -8,6 +8,7 @@ using Lykke.Snow.AuditService.Client.Model.Request;
 using Lykke.Snow.AuditService.Client.Model.Request.Rfq;
 using Lykke.Snow.AuditService.Domain.Enum;
 using Lykke.Snow.AuditService.Domain.Enum.ActionTypes;
+using Lykke.Snow.AuditService.Domain.Model;
 using Lykke.Snow.AuditService.Domain.Services;
 using Lykke.Snow.AuditService.Settings;
 using Lykke.Snow.Common.Startup;
@@ -46,7 +47,7 @@ namespace Lykke.Snow.AuditService.Controllers
             JsonDiffFilter jsonDiffFilter = null!;
 
             if (request.ActionType == AuditEventType.Edition && request.RefinedEditActionType == RfqRefinedEditActionType.StatusChanged)
-                jsonDiffFilter = new JsonDiffFilter() { PropertyName = nameof(request.State) };
+                jsonDiffFilter = new JsonDiffFilter(nameof(request.State));
 
             var result = await _auditEventService.GetAll(filter, jsonDiffFilter, skip, take);
             

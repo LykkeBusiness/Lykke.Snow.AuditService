@@ -5,6 +5,7 @@ using Lykke.Contracts.Responses;
 using Lykke.Snow.Audit;
 using Lykke.Snow.Audit.Abstractions;
 using Lykke.Snow.AuditService.Domain.Enum;
+using Lykke.Snow.AuditService.Domain.Model;
 using Lykke.Snow.AuditService.Domain.Repositories;
 using Lykke.Snow.AuditService.Domain.Services;
 using Lykke.Snow.Common;
@@ -24,7 +25,7 @@ namespace Lykke.Snow.AuditService.DomainServices.Services
             _objectDiffService = objectDiffService;
         }
 
-        public async Task<PaginatedResponse<IAuditModel<AuditDataType>>> GetAll(AuditTrailFilter<AuditDataType> filter, JsonDiffFilter? jsonDiffFilter, int? skip, int? take)
+        public async Task<PaginatedResponse<IAuditModel<AuditDataType>>> GetAll(AuditTrailFilter<AuditDataType> filter, JsonDiffFilter? jsonDiffFilter = null, int? skip = null, int? take = null)
         {
             (skip, take) = PaginationUtils.ValidateSkipAndTake(skip, take);
             

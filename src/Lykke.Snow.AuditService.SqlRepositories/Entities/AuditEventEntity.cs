@@ -13,9 +13,10 @@ namespace Lykke.Snow.AuditService.SqlRepositories.Entities
         public string CorrelationId { get; set; }
         public string UserName { get; set; }
         public AuditEventType Type { get; set; }
-        public string ActionTypeDetails { get; set; }
+        public string AuditEventTypeDetails { get; set; }
         public AuditDataType DataType { get; set; }
         public string DataReference { get; set; }
         public string DataDiff { get; set; }
+
     }
 }

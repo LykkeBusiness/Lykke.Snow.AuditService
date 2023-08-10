@@ -4,6 +4,7 @@ using JsonDiffPatchDotNet;
 using Lykke.Snow.Audit;
 using Lykke.Snow.Audit.Abstractions;
 using Lykke.Snow.AuditService.Domain.Enum;
+using Lykke.Snow.AuditService.Domain.Model;
 using Lykke.Snow.AuditService.Domain.Services;
 
 using Newtonsoft.Json.Linq;
