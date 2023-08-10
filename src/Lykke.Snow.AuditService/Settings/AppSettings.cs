@@ -5,6 +5,6 @@ namespace Lykke.Snow.AuditService.Settings
 {
     public class AppSettings
     {
-        public AuditServiceSettings AuditService { get; set; } = null!;
+        public AuditServiceSettings? AuditService { get; set; } = null;
     }
 }

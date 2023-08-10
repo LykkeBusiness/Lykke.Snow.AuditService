@@ -33,8 +33,6 @@ namespace Lykke.Snow.AuditService.SqlRepositories.Repositories
 
         public async Task<IList<IAuditModel<AuditDataType>>> GetAllAsync(AuditTrailFilter<AuditDataType> filter)
         {
-           //(skip, take) = PaginationUtils.ValidateSkipAndTake(skip, take);
-
             using (var context = _contextFactory.CreateDataContext())
             {
                 var query = context
@@ -46,17 +44,7 @@ namespace Lykke.Snow.AuditService.SqlRepositories.Repositories
 
                 query = query.OrderByDescending(x => x.Timestamp);
 
-                //if (skip.HasValue && take.HasValue)
-                //    query = query.Skip(skip.Value).Take(take.Value);
-
                 var contents = await query.ToListAsync();
-
-                //var result = new PaginatedResponse<IAuditModel<AuditDataType>>(
-                //    contents: contents as IReadOnlyList<IAuditModel<AuditDataType>>,
-                //    start: skip ?? 0,
-                //    size: contents.Count,
-                //    totalSize: total
-                //);
 
                 return contents;
             }

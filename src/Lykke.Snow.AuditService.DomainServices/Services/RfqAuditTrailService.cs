@@ -7,6 +7,7 @@ using Lykke.Snow.AuditService.Domain.Model;
 using Lykke.Snow.AuditService.Domain.Repositories;
 using Lykke.Snow.AuditService.Domain.Services;
 using MarginTrading.Backend.Contracts.Events;
+using MarginTrading.Backend.Contracts.Rfq;
 
 namespace Lykke.Snow.AuditService.DomainServices.Services
 {
@@ -25,13 +26,27 @@ namespace Lykke.Snow.AuditService.DomainServices.Services
             _objectDiffService = objectDiffService;
         }
 
+        public string GetEventUsername(RfqEvent rfqEvent)
+        {
+            string username = string.Empty;
+            
+            if(rfqEvent.RfqSnapshot.OriginatorType == RfqOriginatorType.Investor || rfqEvent.RfqSnapshot.OriginatorType == RfqOriginatorType.OnBehalf)
+                username = rfqEvent.RfqSnapshot.CreatedBy;
+            else
+                username = "SYSTEM";
+                
+            return username;
+        }
+
         public AuditModel<AuditDataType> GetAuditEvent(RfqEvent rfqEvent, string jsonDiff)
         {
+            var username = GetEventUsername(rfqEvent);
+
             var auditEvent = new AuditModel<AuditDataType>()
             {
                 Timestamp = rfqEvent.RfqSnapshot.LastModified,
                 CorrelationId = rfqEvent.RfqSnapshot.CausationOperationId,
-                UserName = rfqEvent.RfqSnapshot.CreatedBy,
+                UserName = username,
                 Type = rfqEvent.EventType == RfqEventTypeContract.New ? AuditEventType.Creation : AuditEventType.Edition,
                 AuditEventTypeDetails = rfqEvent.RfqSnapshot.State.ToString(),
                 DataType = AuditDataType.Rfq,
@@ -51,11 +66,10 @@ namespace Lykke.Snow.AuditService.DomainServices.Services
 
                 await _auditObjectStateRepository.AddOrUpdate(auditObjectState);
 
-                var diff = _objectDiffService.GenerateNewJsonDiff(rfqEvent.RfqSnapshot);
+                var diff = GetRfqJsonDiff(rfqEvent, existingObject: null);
 
                 var auditEvent = GetAuditEvent(rfqEvent, diff);
 
-                // TODO: is it idempotent? what happens if event is consumed more than once?
                 await _auditEventRepository.AddAsync(auditEvent);
             }
             else if(rfqEvent.EventType == RfqEventTypeContract.Update)
@@ -66,8 +80,8 @@ namespace Lykke.Snow.AuditService.DomainServices.Services
                 {
                     throw new AuditObjectNotFoundException(dataType: AuditDataType.Rfq.ToString(), dataReference: rfqEvent.RfqSnapshot.Id);
                 }
-
-                var diff = _objectDiffService.GetJsonDiff(existingObject.StateInJson, rfqEvent.RfqSnapshot.ToJson());
+                
+                var diff = GetRfqJsonDiff(rfqEvent, existingObject);
 
                 var auditEvent = GetAuditEvent(rfqEvent, diff);
 
@@ -78,6 +92,16 @@ namespace Lykke.Snow.AuditService.DomainServices.Services
 
                 await _auditEventRepository.AddAsync(auditEvent);
             }
+        }
+
+        public string GetRfqJsonDiff(RfqEvent rfqEvent, AuditObjectState? existingObject)
+        {
+            if(existingObject == null)
+                return _objectDiffService.GenerateNewJsonDiff(rfqEvent.RfqSnapshot);
+
+            var diff = _objectDiffService.GetJsonDiff(existingObject.StateInJson, rfqEvent.RfqSnapshot.ToJson());
+            
+            return diff;
         }
     }
 }
