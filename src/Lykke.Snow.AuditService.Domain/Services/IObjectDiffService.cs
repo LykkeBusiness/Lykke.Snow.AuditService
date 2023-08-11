@@ -1,8 +1,10 @@
+// Copyright (c) 2023 Lykke Corp.
+// See the LICENSE file in the project root for more information.
+
 using System.Collections.Generic;
 using Lykke.Snow.Audit.Abstractions;
 using Lykke.Snow.AuditService.Domain.Enum;
 using Lykke.Snow.AuditService.Domain.Model;
-
 
 namespace Lykke.Snow.AuditService.Domain.Services
 {

@@ -1,5 +1,7 @@
-using Autofac;
+// Copyright (c) 2023 Lykke Corp.
+// See the LICENSE file in the project root for more information.
 
+using Autofac;
 using Lykke.Common.MsSql;
 using Lykke.Snow.AuditService.Domain.Repositories;
 using Lykke.Snow.AuditService.Settings;
