@@ -1,3 +1,6 @@
+// Copyright (c) 2023 Lykke Corp.
+// See the LICENSE file in the project root for more information.
+
 using Common;
 using JsonDiffPatchDotNet;
 using Lykke.Snow.AuditService.Domain.Services;
