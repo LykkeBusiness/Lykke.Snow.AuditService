@@ -35,12 +35,9 @@ namespace Lykke.Snow.AuditService.Controllers
             _auditServiceSettings = auditServiceSettings;
         }
 
-        // Special filters for RFQ
-        // Status = Finished & Status = PriceRequested & Status = PriceChanged
-        // ActionType = Creation & Edition & StatusChanged
         [HttpGet("rfq")]
         [ProducesResponseType(typeof(PaginatedResponse<IAuditModel<AuditDataType>>), (int)HttpStatusCode.OK)]
-        public async Task<PaginatedResponse<IAuditModel<AuditDataType>>> Rfq([FromQuery] GetRfqAuditTrailRequest request, int? skip = null, int? take = null)
+        public async Task<PaginatedResponse<IAuditModel<AuditDataType>>> Rfq([FromQuery] GetRfqAuditEventsRequest request, int? skip = null, int? take = null)
         {
             var filter = _mapper.Map<AuditTrailFilter<AuditDataType>>(request);
 

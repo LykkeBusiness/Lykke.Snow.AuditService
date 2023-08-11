@@ -9,7 +9,7 @@ namespace Lykke.Snow.AuditService.Client.Model.Request.Rfq
     /// <summary>
     /// Request class for listing RFQ audit events.
     /// </summary>
-    public class GetRfqAuditTrailRequest
+    public class GetRfqAuditEventsRequest
     {
         /// <summary>
         /// Starting point in time for the audit events
