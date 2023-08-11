@@ -3,6 +3,9 @@ using Lykke.Snow.AuditService.Domain.Enum;
 
 namespace Lykke.Snow.AuditService.Domain.Model
 {
+    /// <summary>
+    /// An entity represents current state of the entities which audit events are stored for.
+    /// </summary>
     public class AuditObjectState
     {
         public string DataReference { get; set; }
