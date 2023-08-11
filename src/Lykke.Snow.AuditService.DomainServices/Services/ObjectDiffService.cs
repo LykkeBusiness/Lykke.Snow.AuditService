@@ -48,6 +48,9 @@ namespace Lykke.Snow.AuditService.DomainServices.Services
             foreach(var auditEvent in auditEvents)
             {
                 var diff = auditEvent.DataDiff;
+                
+                if(string.IsNullOrEmpty(diff))
+                    continue;
 
                 JObject jobject = JObject.Parse(auditEvent.DataDiff);
 
