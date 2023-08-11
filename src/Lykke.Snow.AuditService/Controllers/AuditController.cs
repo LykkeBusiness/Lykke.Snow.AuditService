@@ -51,7 +51,7 @@ namespace Lykke.Snow.AuditService.Controllers
             return result;
         }
 
-        [HttpGet("csv")]
+        [HttpGet("rfq/csv")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.Forbidden)]
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]
