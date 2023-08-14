@@ -9,6 +9,9 @@ using MarginTrading.Backend.Contracts.Events;
 
 namespace Lykke.Snow.AuditService.Domain.Services
 {
+    /// <summary>
+    /// Service interface for handling rfq-related logic - saving audit events.
+    /// </summary>
     public interface IRfqAuditTrailService
     {
         string GetEventUsername(RfqEvent rfqEvent);
