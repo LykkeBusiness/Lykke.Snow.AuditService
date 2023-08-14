@@ -8,6 +8,9 @@ using Lykke.Snow.AuditService.Domain.Services;
 
 namespace Lykke.Snow.AuditService.DomainServices.Services
 {
+    /// <summary>
+    /// Factory class for creating AuditObjectState instances - created for standardized instantiation
+    /// </summary>
     public class AuditObjectStateFactory : IAuditObjectStateFactory
     {
         public AuditObjectState Create(AuditDataType auditDataType, string dataReference, string currentStateInJson, DateTime lastModified)
