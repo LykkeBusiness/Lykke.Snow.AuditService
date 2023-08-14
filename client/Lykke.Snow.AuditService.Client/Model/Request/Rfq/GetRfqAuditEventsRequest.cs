@@ -1,5 +1,7 @@
-using System;
+// Copyright (c) 2023 Lykke Corp.
+// See the LICENSE file in the project root for more information.
 
+using System;
 using Lykke.Snow.Audit;
 using Lykke.Snow.AuditService.Domain.Enum.ActionTypes;
 using MarginTrading.Backend.Contracts.Rfq;
