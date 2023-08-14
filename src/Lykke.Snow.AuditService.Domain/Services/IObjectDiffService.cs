@@ -39,7 +39,7 @@ namespace Lykke.Snow.AuditService.Domain.Services
         string GenerateNewJsonDiff<T>(T newState);
         
         /// <summary>
-        /// Filters audit events based on given json diff filter. (based on json properties - and their values if needed)
+        /// Filters audit events based on given json diff filter. (based on json properties)
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="auditEvents"></param>

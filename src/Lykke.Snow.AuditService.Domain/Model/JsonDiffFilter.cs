@@ -10,7 +10,7 @@ namespace Lykke.Snow.AuditService.Domain.Model
     /// </summary>
     public class JsonDiffFilter
     {
-        public string PropertyName { get; set; }
+        public string PropertyName { get; }
         
         public JsonDiffFilter(string propertyName)
         {
