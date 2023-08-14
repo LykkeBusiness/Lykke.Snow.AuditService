@@ -7,7 +7,6 @@ using AutoMapper;
 using Lykke.Contracts.Responses;
 using Lykke.Snow.Audit;
 using Lykke.Snow.Audit.Abstractions;
-using Lykke.Snow.AuditService.Client.Model.Request;
 using Lykke.Snow.AuditService.Client.Model.Request.Rfq;
 using Lykke.Snow.AuditService.Domain.Enum;
 using Lykke.Snow.AuditService.Domain.Enum.ActionTypes;
@@ -58,9 +57,16 @@ namespace Lykke.Snow.AuditService.Controllers
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.Forbidden)]
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]
-        public async Task<IActionResult> Csv([FromQuery] ExportAuditEventsToCsvRequest request)
+        public async Task<IActionResult> Csv([FromQuery] GetRfqAuditEventsRequest request)
         {
-            var result = await _auditEventService.GetAll(request.Filter ?? new AuditTrailFilter<AuditDataType>());
+            var filter = _mapper.Map<AuditTrailFilter<AuditDataType>>(request);
+
+            JsonDiffFilter jsonDiffFilter = null!;
+
+            if (request.ActionType == AuditEventType.Edition && request.RefinedEditActionType == RfqRefinedEditActionType.StatusChanged)
+                jsonDiffFilter = new JsonDiffFilter(nameof(request.State));
+
+            var result = await _auditEventService.GetAll(filter, jsonDiffFilter);
 
             this.TrySetCsvSettings(_auditServiceSettings.CsvExportSettings.Delimiter, _auditServiceSettings.CsvExportSettings.ShouldOutputHeader);
 
