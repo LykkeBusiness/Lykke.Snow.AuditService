@@ -34,10 +34,8 @@ namespace Lykke.Snow.AuditService.Client
         /// Please set Accept: text/csv header
         /// </summary>
         /// <param name="request"></param>
-        /// <param name="skip"></param>
-        /// <param name="take"></param>
         /// <returns></returns>
         [Get("/api/audit/rfq/csv")]
-        Task<IList<AuditModel<AuditDataType>>> ExportRfqAuditEventsToCSV(GetRfqAuditEventsRequest request, int? skip = null, int? take = null);
+        Task<IList<AuditModel<AuditDataType>>> ExportRfqAuditEventsToCSV(GetRfqAuditEventsRequest request);
     }
 }
