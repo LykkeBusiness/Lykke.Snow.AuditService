@@ -62,11 +62,7 @@ namespace Lykke.Snow.AuditService.DomainServices.Services
                     if(property.Name != jsonDiffFilter.PropertyName)
                         continue;
 
-                    if(jsonDiffFilter.Value == null)
-                        yield return auditEvent;
-                        
-                    if(property.Value.ToString() == jsonDiffFilter.Value)
-                        yield return auditEvent;
+                    yield return auditEvent;
                 }
             }
         }

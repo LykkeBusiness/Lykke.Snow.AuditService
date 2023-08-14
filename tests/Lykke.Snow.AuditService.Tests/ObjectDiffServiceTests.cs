@@ -1,7 +1,12 @@
 // Copyright (c) 2023 Lykke Corp.
 // See the LICENSE file in the project root for more information.
 
+using System.Collections.Generic;
 using System.Linq;
+using Lykke.Snow.Audit;
+using Lykke.Snow.Audit.Abstractions;
+using Lykke.Snow.AuditService.Domain.Enum;
+using Lykke.Snow.AuditService.Domain.Model;
 using Lykke.Snow.AuditService.DomainServices.Services;
 using Newtonsoft.Json.Linq;
 using Xunit;
@@ -135,6 +140,158 @@ namespace Lykke.Snow.AuditService.Tests
             Assert.Equal(2, emailToken?.Children().Count());
             Assert.Equal("jane.doe@example.com", emailToken?.First?.ToString());
             Assert.Equal("jane.doe.smith@example.com", emailToken?.Last?.ToString());
+        }
+        
+        /// <summary>
+        /// Test method that tests if json diff filter work when the diff the client is interested in is the only diff.
+        /// </summary>
+        [Fact]
+        public void FilterBasedOnJsonDiff_WithoutAnyExtraDiff_ShouldWorkAsExpected()
+        {
+            var auditEvent1 = new AuditModel<AuditDataType>() 
+            { 
+                DataDiff = @"
+                    {
+                        ""State"": [
+                            ""Initiated"",
+                            ""Started""
+                        ]
+                    }
+                " 
+            };
+
+            var auditEvent2 = new AuditModel<AuditDataType>() 
+            { 
+                DataDiff = @"
+                    {
+                        ""AccountId"": [
+                            ""account-1"",
+                            ""account-2""
+                        ]
+                    }
+                " 
+            };
+            
+            var list = new List<IAuditModel<AuditDataType>>();
+            list.Add(auditEvent1);
+            list.Add(auditEvent2);
+
+            var sut = CreateSut();
+            
+            var jsonDiffFilter = new JsonDiffFilter(propertyName: "State");
+
+            var actual = sut.FilterBasedOnJsonDiff(list, jsonDiffFilter);
+            var item = Assert.Single(actual);
+
+            Assert.Equal(auditEvent1, item);
+        }
+
+        /// <summary>
+        /// Test method that tests if json diff filter works when there's more properties than the one client is interested in.hat tests if json diff filter works when there's more properties than the one client is interested in.
+        /// </summary>
+        [Fact]
+        public void FilterBasedOnJsonDiff_WithMorePropertyDiffs_ShouldWorkAsExpected()
+        {
+            var auditEvent1 = new AuditModel<AuditDataType>() 
+            { 
+                DataDiff = @"
+                    {
+                        ""State"": [
+                            ""Initiated"",
+                            ""Started""
+                        ],
+                        ""RequestNumber"": [
+                            4,
+                            5
+                        ],
+                        ""InstrumentId"": [
+                            ""old-instrument"",
+                            ""new-instrument""
+                        ]
+                    }
+                " 
+            };
+
+            var auditEvent2 = new AuditModel<AuditDataType>() 
+            { 
+                DataDiff = @"
+                    {
+                        ""AccountId"": [
+                            ""account-1"",
+                            ""account-2""
+                        ]
+                    }
+                " 
+            };
+            
+            var list = new List<IAuditModel<AuditDataType>>();
+            list.Add(auditEvent1);
+            list.Add(auditEvent2);
+
+            var sut = CreateSut();
+            
+            var jsonDiffFilter = new JsonDiffFilter(propertyName: "State");
+
+            var actual = sut.FilterBasedOnJsonDiff(list, jsonDiffFilter);
+            var item = Assert.Single(actual);
+
+            Assert.Equal(auditEvent1, item);
+        }
+
+        /// <summary>
+        /// Test method that tests if json diff filter works when there's more than one match in given collection.
+        /// </summary>
+        [Fact]
+        public void FilterBasedOnJsonDiff_WithMoreThanOneMatch_ShouldReturnAllItems()
+        {
+            var auditEvent1 = new AuditModel<AuditDataType>() 
+            { 
+                DataDiff = @"
+                    {
+                        ""State"": [
+                            ""Initiated"",
+                            ""Started""
+                        ],
+                        ""RequestNumber"": [
+                            4,
+                            5
+                        ],
+                        ""InstrumentId"": [
+                            ""old-instrument"",
+                            ""new-instrument""
+                        ]
+                    }
+                " 
+            };
+
+            var auditEvent2 = new AuditModel<AuditDataType>() 
+            { 
+                DataDiff = @"
+                    {
+                        ""AccountId"": [
+                            ""account-1"",
+                            ""account-2""
+                        ],
+                        ""RequestNumber"": [
+                            3,
+                            4
+                        ]
+                    }
+                " 
+            };
+            
+            var list = new List<IAuditModel<AuditDataType>>();
+            list.Add(auditEvent1);
+            list.Add(auditEvent2);
+
+            var sut = CreateSut();
+            
+            var jsonDiffFilter = new JsonDiffFilter(propertyName: "RequestNumber");
+
+            var actual = sut.FilterBasedOnJsonDiff(list, jsonDiffFilter);
+            var count = actual.Count();
+            
+            Assert.Equal(2, count);
         }
 
         private ObjectDiffService CreateSut()
