@@ -21,14 +21,14 @@ namespace Lykke.Snow.AuditService.Controllers
 {
     [Authorize]
     [ApiController]
-    [Route("api/audit")]
-    public class AuditController : ControllerBase
+    [Route("api/audit/rfq")]
+    public class RfqAuditController : ControllerBase
     {
         private readonly IMapper _mapper;
         private readonly IAuditEventService _auditEventService;
         private readonly AuditServiceSettings _auditServiceSettings;
 
-        public AuditController(IMapper mapper,
+        public RfqAuditController(IMapper mapper,
             IAuditEventService auditEventService,
             AuditServiceSettings auditServiceSettings)
         {
@@ -37,7 +37,7 @@ namespace Lykke.Snow.AuditService.Controllers
             _auditServiceSettings = auditServiceSettings;
         }
 
-        [HttpGet("rfq")]
+        [HttpGet]
         [ProducesResponseType(typeof(PaginatedResponse<IAuditModel<AuditDataType>>), (int)HttpStatusCode.OK)]
         public async Task<PaginatedResponse<IAuditModel<AuditDataType>>> Rfq([FromQuery] GetRfqAuditEventsRequest request, int? skip = null, int? take = null)
         {
@@ -53,7 +53,7 @@ namespace Lykke.Snow.AuditService.Controllers
             return result;
         }
 
-        [HttpGet("rfq/csv")]
+        [HttpGet("csv")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.Forbidden)]
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]
