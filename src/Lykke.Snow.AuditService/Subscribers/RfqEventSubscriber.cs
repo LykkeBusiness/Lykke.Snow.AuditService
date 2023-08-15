@@ -19,14 +19,17 @@ namespace Lykke.Snow.AuditService.Subscribers
         private readonly ILoggerFactory _loggerFactory;
         private readonly RabbitMqSubscriptionSettings _settings;
         private readonly IRfqAuditTrailService _rfqAuditTrailService;
+        private readonly ILogger<RfqEventSubscriber> _logger;
 
         public RfqEventSubscriber(ILoggerFactory loggerFactory,
             SubscriptionSettings settings,
-            IRfqAuditTrailService rfqAuditTrailService)
+            IRfqAuditTrailService rfqAuditTrailService,
+            ILogger<RfqEventSubscriber> logger)
         {
             _loggerFactory = loggerFactory;
             _settings = settings;
             _rfqAuditTrailService = rfqAuditTrailService;
+            _logger = logger;
         }
 
         public void Dispose()
@@ -47,6 +50,8 @@ namespace Lykke.Snow.AuditService.Subscribers
         
         public Task ProcessMessageAsync(RfqEvent e)
         {
+            _logger.LogDebug("Incoming RfqEvent {@e}", e);
+
             return _rfqAuditTrailService.ProcessRfqEvent(e);
         }
 

@@ -49,6 +49,7 @@ namespace Lykke.Snow.AuditService.Tests
         private RfqEventSubscriber CreateSut(IRfqAuditTrailService? rfqAuditTrailServiceArg = null)
         {
             var mockLoggerFactory = new Mock<ILoggerFactory>();
+            var mockLogger = new Mock<ILogger<RfqEventSubscriber>>();
             var subscriptionSettings = new SubscriptionSettings();
             
             IRfqAuditTrailService rfqAuditTrailService = new Mock<IRfqAuditTrailService>().Object;
@@ -58,7 +59,7 @@ namespace Lykke.Snow.AuditService.Tests
                 rfqAuditTrailService = rfqAuditTrailServiceArg;
             }
             
-            return new RfqEventSubscriber(mockLoggerFactory.Object, subscriptionSettings, rfqAuditTrailService);
+            return new RfqEventSubscriber(mockLoggerFactory.Object, subscriptionSettings, rfqAuditTrailService, mockLogger.Object);
         }
     }
 }
