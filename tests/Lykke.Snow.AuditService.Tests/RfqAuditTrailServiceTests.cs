@@ -66,9 +66,7 @@ namespace Lykke.Snow.AuditService.Tests
                 }
             };
             
-            var sut = CreateSut();
-            
-            var actual = sut.GetAuditEvent(rfqEvent, username, jsonDiff);
+            var actual = RfqAuditTrailService.GetAuditEvent(rfqEvent, username, jsonDiff);
             
             Assert.Equal(now, actual.Timestamp);
             Assert.Equal(operationId, actual.CorrelationId);
