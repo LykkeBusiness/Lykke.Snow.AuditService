@@ -6,9 +6,8 @@ using System.Threading.Tasks;
 using JetBrains.Annotations;
 using Lykke.Contracts.Responses;
 using Lykke.Snow.Audit;
-using Lykke.Snow.Audit.Abstractions;
-using Lykke.Snow.AuditService.Client.Model.Request.Rfq;
-using Lykke.Snow.AuditService.Domain.Enum;
+using Lykke.Snow.AuditService.Client.Model;
+using Lykke.Snow.AuditService.Client.Model.Rfq;
 using Refit;
 
 namespace Lykke.Snow.AuditService.Client
@@ -27,7 +26,7 @@ namespace Lykke.Snow.AuditService.Client
         /// <param name="take"></param>
         /// <returns></returns>
         [Get("/api/audit/rfq")]
-        Task<PaginatedResponse<AuditModel<AuditDataType>>> GetRfqAuditEvents(GetRfqAuditEventsRequest request, int? skip = null, int? take = null);
+        Task<PaginatedResponse<AuditModel<AuditDataTypeContract>>> GetRfqAuditEvents(GetRfqAuditEventsRequest request, int? skip = null, int? take = null);
 
         /// <summary>
         /// Endpoint for getting rfq audit events with filters in CSV format.
@@ -36,6 +35,6 @@ namespace Lykke.Snow.AuditService.Client
         /// <param name="request"></param>
         /// <returns></returns>
         [Get("/api/audit/rfq/csv")]
-        Task<IList<AuditModel<AuditDataType>>> ExportRfqAuditEventsToCSV(GetRfqAuditEventsRequest request);
+        Task<IList<AuditModel<AuditDataTypeContract>>> ExportRfqAuditEventsToCSV(GetRfqAuditEventsRequest request);
     }
 }
