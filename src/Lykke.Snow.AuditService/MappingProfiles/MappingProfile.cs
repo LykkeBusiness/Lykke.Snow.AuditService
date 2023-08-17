@@ -3,7 +3,7 @@
 
 using AutoMapper;
 using Lykke.Snow.Audit;
-using Lykke.Snow.AuditService.Client.Model.Request.Rfq;
+using Lykke.Snow.AuditService.Client.Model.Rfq;
 using Lykke.Snow.AuditService.Domain.Enum;
 using Lykke.Snow.AuditService.Domain.Model;
 using Lykke.Snow.AuditService.SqlRepositories.Entities;

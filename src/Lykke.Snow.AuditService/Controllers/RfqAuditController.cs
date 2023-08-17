@@ -7,9 +7,8 @@ using AutoMapper;
 using Lykke.Contracts.Responses;
 using Lykke.Snow.Audit;
 using Lykke.Snow.Audit.Abstractions;
-using Lykke.Snow.AuditService.Client.Model.Request.Rfq;
+using Lykke.Snow.AuditService.Client.Model.Rfq;
 using Lykke.Snow.AuditService.Domain.Enum;
-using Lykke.Snow.AuditService.Domain.Enum.ActionTypes;
 using Lykke.Snow.AuditService.Domain.Model;
 using Lykke.Snow.AuditService.Domain.Services;
 using Lykke.Snow.AuditService.Settings;
@@ -45,7 +44,7 @@ namespace Lykke.Snow.AuditService.Controllers
 
             JsonDiffFilter jsonDiffFilter = null!;
 
-            if (request.ActionType == AuditEventType.Edition && request.RefinedEditActionType == RfqRefinedEditActionType.StatusChanged)
+            if (request.ActionType == AuditEventType.Edition && request.RefinedEditActionType == RfqRefinedEditActionTypeContract.StatusChanged)
                 jsonDiffFilter = new JsonDiffFilter(nameof(request.State));
 
             var result = await _auditEventService.GetAll(filter, jsonDiffFilter, skip, take);
@@ -63,7 +62,7 @@ namespace Lykke.Snow.AuditService.Controllers
 
             JsonDiffFilter jsonDiffFilter = null!;
 
-            if (request.ActionType == AuditEventType.Edition && request.RefinedEditActionType == RfqRefinedEditActionType.StatusChanged)
+            if (request.ActionType == AuditEventType.Edition && request.RefinedEditActionType == RfqRefinedEditActionTypeContract.StatusChanged)
                 jsonDiffFilter = new JsonDiffFilter(nameof(request.State));
 
             var result = await _auditEventService.GetAll(filter, jsonDiffFilter);

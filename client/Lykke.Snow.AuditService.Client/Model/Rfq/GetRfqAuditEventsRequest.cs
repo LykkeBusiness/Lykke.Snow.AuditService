@@ -3,10 +3,10 @@
 
 using System;
 using Lykke.Snow.Audit;
-using Lykke.Snow.AuditService.Domain.Enum.ActionTypes;
+using Lykke.Snow.AuditService.Client.Model.Request;
 using MarginTrading.Backend.Contracts.Rfq;
 
-namespace Lykke.Snow.AuditService.Client.Model.Request.Rfq
+namespace Lykke.Snow.AuditService.Client.Model.Rfq
 {
     /// <summary>
     /// Request class for listing RFQ audit events.
@@ -36,7 +36,7 @@ namespace Lykke.Snow.AuditService.Client.Model.Request.Rfq
         /// <summary>
         /// Refined edit action type
         /// </summary>  
-        public RfqRefinedEditActionType? RefinedEditActionType { get; set; }
+        public RfqRefinedEditActionTypeContract? RefinedEditActionType { get; set; }
         
         /// <summary>
         /// Rfq state
