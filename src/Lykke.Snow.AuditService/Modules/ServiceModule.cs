@@ -30,8 +30,8 @@ namespace Lykke.Snow.AuditService.Modules
                 .AsSelf()
                 .SingleInstance();
 
-            builder.RegisterType<RfqAuditTrailService>()
-                .As<IRfqAuditTrailService>()
+            builder.RegisterType<AuditEventProcessor>()
+                .As<IAuditEventProcessor>()
                 .SingleInstance();
 
             builder.RegisterType<ObjectDiffService>()
