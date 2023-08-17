@@ -12,9 +12,10 @@ namespace Lykke.Snow.AuditService.Domain.Services
     /// </summary>
     public interface IAuditObjectStateFactory
     {
-        AuditObjectState Create(AuditDataType auditDataType, 
+        AuditObjectState Create(
+            AuditDataType auditDataType, 
+            string currentStateInJson,
             string dataReference,
-            string currentStateInJson, 
             DateTime lastModified);
     }
 }

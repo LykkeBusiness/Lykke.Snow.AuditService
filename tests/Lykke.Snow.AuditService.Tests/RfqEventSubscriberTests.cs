@@ -37,29 +37,29 @@ namespace Lykke.Snow.AuditService.Tests
         [ClassData(typeof(RfqEventTestData))]
         public async Task ProcessMessageAsync_ShouldPassTheEvent_ToRfqAuditTrailService(RfqEvent evt)
         {
-            var mockRfqAuditTrailService = new Mock<IRfqAuditTrailService>();
+            var mockAuditEventProcessor = new Mock<IAuditEventProcessor>();
             
-            var sut = CreateSut(mockRfqAuditTrailService.Object);
+            var sut = CreateSut(mockAuditEventProcessor.Object);
             
             await sut.ProcessMessageAsync(evt);
             
-            mockRfqAuditTrailService.Verify(x => x.ProcessRfqEvent(evt), Times.Once);
+            mockAuditEventProcessor.Verify(x => x.ProcessEvent(evt), Times.Once);
         }
         
-        private RfqEventSubscriber CreateSut(IRfqAuditTrailService? rfqAuditTrailServiceArg = null)
+        private RfqEventSubscriber CreateSut(IAuditEventProcessor? auditEventProcessorArg = null)
         {
             var mockLoggerFactory = new Mock<ILoggerFactory>();
             var mockLogger = new Mock<ILogger<RfqEventSubscriber>>();
             var subscriptionSettings = new SubscriptionSettings();
             
-            IRfqAuditTrailService rfqAuditTrailService = new Mock<IRfqAuditTrailService>().Object;
+            IAuditEventProcessor auditEventProcessor = new Mock<IAuditEventProcessor>().Object;
             
-            if(rfqAuditTrailServiceArg != null)
+            if(auditEventProcessorArg != null)
             {
-                rfqAuditTrailService = rfqAuditTrailServiceArg;
+                auditEventProcessor = auditEventProcessorArg;
             }
             
-            return new RfqEventSubscriber(mockLoggerFactory.Object, subscriptionSettings, rfqAuditTrailService, mockLogger.Object);
+            return new RfqEventSubscriber(auditEventProcessor, mockLoggerFactory.Object, subscriptionSettings, mockLogger.Object);
         }
     }
 }
