@@ -7,6 +7,7 @@
     <Company>Lykke Business</Company>
     <Product>Lykke.Snow.AuditService</Product>
     <Description>Client for Lykke.Snow.AuditService API</Description>
+    <PackageId>Lykke.Snow.AuditService.Client</PackageId>
     <PackageLicenseUrl>https://github.com/LykkeBusiness/Lykke.Snow.AuditService/blob/master/LICENSE</PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/LykkeBusiness/Lykke.Snow.AuditService</PackageProjectUrl>
     <RepositoryUrl>https://github.com/LykkeBusinessPlatform/Lykke.Snow.AuditService.git</RepositoryUrl>
