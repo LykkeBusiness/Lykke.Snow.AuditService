@@ -44,7 +44,7 @@ namespace Lykke.Snow.AuditService.DomainServices.Services
             return username;
         }
 
-        public AuditModel<AuditDataType> GetAuditEvent(RfqEvent rfqEvent, string username, string jsonDiff)
+        public static AuditModel<AuditDataType> GetAuditEvent(RfqEvent rfqEvent, string username, string jsonDiff)
         {
             var auditEvent = new AuditModel<AuditDataType>()
             {
