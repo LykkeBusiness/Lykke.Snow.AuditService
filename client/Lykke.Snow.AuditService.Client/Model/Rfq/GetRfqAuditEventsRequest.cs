@@ -27,6 +27,16 @@ namespace Lykke.Snow.AuditService.Client.Model.Rfq
         /// CorrelationId of the Audit event
         /// </summary>
         public string? CorrelationId { get; set; }
+
+        /// <summary>
+        /// Reference of the Audit event
+        /// </summary>
+        public string? DataReference { get; set; }
+
+        /// <summary>
+        /// Username of the Audit event
+        /// </summary>
+        public string? UserName { get; set; }
         
         /// <summary>
         /// Action type for the audit events
