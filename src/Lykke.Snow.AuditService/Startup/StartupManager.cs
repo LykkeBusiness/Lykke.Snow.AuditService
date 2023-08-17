@@ -10,19 +10,19 @@ namespace Lykke.Snow.AuditService.Startup
 {
     public class StartupManager
     {
-        private readonly IEnumerable<IStartStop> _rabbitMqStartables;
+        private readonly IEnumerable<IStartStop> _startables;
         private readonly ILogger<StartupManager> _logger;
 
-        public StartupManager(IEnumerable<IStartStop> rabbitMqStartables, 
+        public StartupManager(IEnumerable<IStartStop> startables, 
             ILogger<StartupManager> logger)
         {
-            _rabbitMqStartables = rabbitMqStartables;
+            _startables = startables;
             _logger = logger;
         }
 
         internal void Start()
         {
-            foreach(var component in _rabbitMqStartables)
+            foreach(var component in _startables)
             {
                 StartComponent(component);
             }
