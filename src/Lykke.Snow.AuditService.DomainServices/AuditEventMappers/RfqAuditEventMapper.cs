@@ -1,7 +1,9 @@
+// Copyright (c) 2023 Lykke Corp.
+// See the LICENSE file in the project root for more information.
+
 using Common;
 using Lykke.Snow.Audit;
 using Lykke.Snow.AuditService.Domain.Enum;
-using Lykke.Snow.AuditService.Domain.Model;
 using Lykke.Snow.AuditService.Domain.Services;
 using MarginTrading.Backend.Contracts.Events;
 using MarginTrading.Backend.Contracts.Rfq;
@@ -23,7 +25,6 @@ namespace Lykke.Snow.AuditService.DomainServices.AuditEventMappers
         public AuditModel<AuditDataType> MapAuditEvent(RfqEvent rfqEvent, string diff)
         {
             var username = GetEventUsername(rfqEvent);
-
 
             var auditEvent = new AuditModel<AuditDataType>()
             {

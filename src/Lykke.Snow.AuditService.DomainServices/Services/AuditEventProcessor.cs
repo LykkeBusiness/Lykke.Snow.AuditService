@@ -5,7 +5,6 @@ using System;
 using System.Threading.Tasks;
 using Lykke.Snow.AuditService.Domain.Repositories;
 using Lykke.Snow.AuditService.Domain.Services;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace Lykke.Snow.AuditService.DomainServices.Services
 {
@@ -30,10 +29,8 @@ namespace Lykke.Snow.AuditService.DomainServices.Services
             _serviceProvider = serviceProvider;
         }
 
-        public async Task ProcessEvent<T>(T evt)
+        public async Task ProcessEvent<T>(T evt, IAuditEventMapper<T> eventMapper)
         {
-            var eventMapper = _serviceProvider.GetRequiredService<IAuditEventMapper<T>>();
-
             var auditDataType = eventMapper.GetAuditDataType(evt);
             var dataReference = eventMapper.GetDataReference(evt);
             

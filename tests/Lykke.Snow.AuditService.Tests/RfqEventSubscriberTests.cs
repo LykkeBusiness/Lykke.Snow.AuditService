@@ -5,6 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Lykke.Snow.AuditService.Domain.Services;
+using Lykke.Snow.AuditService.DomainServices.AuditEventMappers;
 using Lykke.Snow.AuditService.Settings;
 using Lykke.Snow.AuditService.Subscribers;
 using MarginTrading.Backend.Contracts.Events;
@@ -33,6 +34,8 @@ namespace Lykke.Snow.AuditService.Tests
     }
     public class RfqEventSubscriberTests
     {
+        private readonly IAuditEventMapper<RfqEvent> _rfqAuditEventMapper = new RfqAuditEventMapper();
+
         [Theory]
         [ClassData(typeof(RfqEventTestData))]
         public async Task ProcessMessageAsync_ShouldPassTheEvent_ToRfqAuditTrailService(RfqEvent evt)
@@ -43,7 +46,7 @@ namespace Lykke.Snow.AuditService.Tests
             
             await sut.ProcessMessageAsync(evt);
             
-            mockAuditEventProcessor.Verify(x => x.ProcessEvent(evt), Times.Once);
+            mockAuditEventProcessor.Verify(x => x.ProcessEvent(evt, _rfqAuditEventMapper), Times.Once);
         }
         
         private RfqEventSubscriber CreateSut(IAuditEventProcessor? auditEventProcessorArg = null)
@@ -59,7 +62,7 @@ namespace Lykke.Snow.AuditService.Tests
                 auditEventProcessor = auditEventProcessorArg;
             }
             
-            return new RfqEventSubscriber(auditEventProcessor, mockLoggerFactory.Object, subscriptionSettings, mockLogger.Object);
+            return new RfqEventSubscriber(auditEventProcessor, mockLoggerFactory.Object, subscriptionSettings, mockLogger.Object, _rfqAuditEventMapper);
         }
     }
 }

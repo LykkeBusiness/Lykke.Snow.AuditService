@@ -20,16 +20,20 @@ namespace Lykke.Snow.AuditService.Subscribers
         private readonly RabbitMqSubscriptionSettings _settings;
         private readonly ILogger<RfqEventSubscriber> _logger;
         private readonly IAuditEventProcessor _auditEventProcessor;
+        private readonly IAuditEventMapper<RfqEvent> _rfqAuditEventMapper;
 
         public RfqEventSubscriber(IAuditEventProcessor auditEventProcessor,
             ILoggerFactory loggerFactory,
             SubscriptionSettings settings,
-            ILogger<RfqEventSubscriber> logger)
+            ILogger<RfqEventSubscriber> logger,
+            IAuditEventMapper<RfqEvent> rfqAuditEventMapper)
         {
             _auditEventProcessor = auditEventProcessor;
             _loggerFactory = loggerFactory;
             _settings = settings;
             _logger = logger;
+            _rfqAuditEventMapper = rfqAuditEventMapper;
+
         }
 
         public void Dispose()
@@ -52,7 +56,7 @@ namespace Lykke.Snow.AuditService.Subscribers
         {
             _logger.LogDebug("Incoming RfqEvent {@e}", e);
 
-            return _auditEventProcessor.ProcessEvent(e);
+            return _auditEventProcessor.ProcessEvent(e, _rfqAuditEventMapper);
         }
 
 
