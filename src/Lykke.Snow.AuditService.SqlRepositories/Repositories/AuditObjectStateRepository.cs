@@ -23,14 +23,11 @@ namespace Lykke.Snow.AuditService.SqlRepositories.Repositories
         private readonly IMapper _mapper;
         private readonly ConcurrentDictionary<(string dataType, string dataReference), SemaphoreSlim> _locks =
             new ConcurrentDictionary<(string dataType, string dataReference), SemaphoreSlim>();
-        private readonly ILogger<AuditObjectStateRepository> _logger;
 
-        public AuditObjectStateRepository(Lykke.Common.MsSql.IDbContextFactory<AuditDbContext> contextFactory, IMapper mapper, ILogger<AuditObjectStateRepository> logger)
+        public AuditObjectStateRepository(Lykke.Common.MsSql.IDbContextFactory<AuditDbContext> contextFactory, IMapper mapper)
         {
             _contextFactory = contextFactory;
             _mapper = mapper;
-            _logger = logger;
-
         }
 
         public async Task AddOrUpdate(AuditObjectState objectState)
@@ -44,30 +41,19 @@ namespace Lykke.Snow.AuditService.SqlRepositories.Repositories
             try
             {
                 await using var context = _contextFactory.CreateDataContext();
-                await using var transaction = await context.Database.BeginTransactionAsync();
 
-                try
-                {
-                    var existingEntity = await context.AuditObjectStates
-                        .SingleOrDefaultAsync(x =>
-                            x.DataType == objectState.DataType && x.DataReference == objectState.DataReference);
+                 var existingEntity = await context.AuditObjectStates
+                     .SingleOrDefaultAsync(x =>
+                         x.DataType == objectState.DataType && x.DataReference == objectState.DataReference);
 
-                    if (existingEntity == null)
-                    {
-                        await TryAddAsync(context, objectState);
-                    }
-                    else
-                    {
-                        await TryUpdateAsync(context, objectState, existingEntity);
-                    }
-
-                    await transaction.CommitAsync();
-                }
-                catch (Exception)
-                {
-                    await transaction.RollbackAsync();
-                    throw;
-                }
+                 if (existingEntity == null)
+                 {
+                     await TryAddAsync(context, objectState);
+                 }
+                 else
+                 {
+                     await TryUpdateAsync(context, objectState, existingEntity);
+                 }
             }
             finally
             {
@@ -110,14 +96,6 @@ namespace Lykke.Snow.AuditService.SqlRepositories.Repositories
             AuditObjectState objectState,
             AuditObjectStateEntity existingEntity)
         {
-            if(objectState.LastModified < existingEntity.LastModified)
-            {
-                _logger.LogWarning("Timestamp for entity state is older than the existing state - the event has been ignored. \n Existing object: {@ExistingObject} \n New object: {@NewObject}",
-                    existingEntity, objectState);
-
-                return;
-            }
-
             _mapper.Map(objectState, existingEntity);
             context.AuditObjectStates.Update(existingEntity);
             try

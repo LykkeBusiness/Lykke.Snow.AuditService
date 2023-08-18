@@ -27,7 +27,7 @@ namespace Lykke.Snow.AuditService.DomainServices.AuditEventMappers
             return evt.RfqSnapshot.ToJson();
         }
 
-        public AuditModel<AuditDataType> MapAuditEvent(RfqEvent rfqEvent, string diff)
+        public AuditModel<AuditDataType> MapAuditEvent(RfqEvent rfqEvent, string diffWithPreviousState)
         {
             var username = GetEventUsername(rfqEvent);
 
@@ -38,9 +38,9 @@ namespace Lykke.Snow.AuditService.DomainServices.AuditEventMappers
                 UserName = username,
                 Type = rfqEvent.EventType == RfqEventTypeContract.New ? AuditEventType.Creation : AuditEventType.Edition,
                 AuditEventTypeDetails = rfqEvent.RfqSnapshot.State.ToString(),
-                DataType = AuditDataType.Rfq,
-                DataReference = rfqEvent.RfqSnapshot.Id,
-                DataDiff = diff
+                DataType = GetAuditDataType(rfqEvent),
+                DataReference = GetDataReference(rfqEvent),
+                DataDiff = diffWithPreviousState
             };
             
             return auditEvent;
