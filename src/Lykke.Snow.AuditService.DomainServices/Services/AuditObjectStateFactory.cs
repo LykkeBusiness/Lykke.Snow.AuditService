@@ -2,9 +2,12 @@
 // See the LICENSE file in the project root for more information.
 
 using System;
+using System.Collections.Generic;
+using Common;
 using Lykke.Snow.AuditService.Domain.Enum;
 using Lykke.Snow.AuditService.Domain.Model;
 using Lykke.Snow.AuditService.Domain.Services;
+using MarginTrading.Backend.Contracts.Events;
 
 namespace Lykke.Snow.AuditService.DomainServices.Services
 {
@@ -18,5 +21,4 @@ namespace Lykke.Snow.AuditService.DomainServices.Services
             return new AuditObjectState(dataType: auditDataType, dataReference: dataReference, stateInJson: currentStateInJson, lastModified: lastModified);
         }
     }
-
 }

@@ -12,8 +12,8 @@ using Lykke.Snow.AuditService.Domain.Exceptions;
 using Lykke.Snow.AuditService.Domain.Model;
 using Lykke.Snow.AuditService.Domain.Repositories;
 using Lykke.Snow.AuditService.SqlRepositories.Entities;
-
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace Lykke.Snow.AuditService.SqlRepositories.Repositories
 {
@@ -23,11 +23,14 @@ namespace Lykke.Snow.AuditService.SqlRepositories.Repositories
         private readonly IMapper _mapper;
         private readonly ConcurrentDictionary<(string dataType, string dataReference), SemaphoreSlim> _locks =
             new ConcurrentDictionary<(string dataType, string dataReference), SemaphoreSlim>();
+        private readonly ILogger<AuditObjectStateRepository> _logger;
 
-        public AuditObjectStateRepository(Lykke.Common.MsSql.IDbContextFactory<AuditDbContext> contextFactory, IMapper mapper)
+        public AuditObjectStateRepository(Lykke.Common.MsSql.IDbContextFactory<AuditDbContext> contextFactory, IMapper mapper, ILogger<AuditObjectStateRepository> logger)
         {
             _contextFactory = contextFactory;
             _mapper = mapper;
+            _logger = logger;
+
         }
 
         public async Task AddOrUpdate(AuditObjectState objectState)
@@ -107,6 +110,14 @@ namespace Lykke.Snow.AuditService.SqlRepositories.Repositories
             AuditObjectState objectState,
             AuditObjectStateEntity existingEntity)
         {
+            if(objectState.LastModified < existingEntity.LastModified)
+            {
+                _logger.LogWarning("Timestamp for entity state is older than the existing state - the event has been ignored. \n Existing object: {@ExistingObject} \n New object: {@NewObject}",
+                    existingEntity, objectState);
+
+                return;
+            }
+
             _mapper.Map(objectState, existingEntity);
             context.AuditObjectStates.Update(existingEntity);
             try
