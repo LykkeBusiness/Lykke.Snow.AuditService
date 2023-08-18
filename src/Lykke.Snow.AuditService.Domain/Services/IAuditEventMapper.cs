@@ -39,6 +39,6 @@ namespace Lykke.Snow.AuditService.Domain.Services
         /// <param name="evt"></param>
         /// <param name="diff"></param>
         /// <returns></returns>
-        AuditModel<AuditDataType> MapAuditEvent(T evt, string diff);
+        AuditModel<AuditDataType> MapAuditEvent(T evt, string diffWithPreviousState);
     }
 }
