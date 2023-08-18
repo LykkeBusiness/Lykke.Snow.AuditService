@@ -25,6 +25,13 @@ namespace Lykke.Snow.AuditService.Domain.Services
         /// <param name="evt"></param>
         /// <returns></returns>
         string GetDataReference(T evt);
+
+        /// <summary>
+        /// Returns the 'state' of the entity - which the diff will be built based on. (Entity payload)
+        /// </summary>
+        /// <param name="evt"></param>
+        /// <returns></returns>
+        string GetStateInJson(T evt);
         
         /// <summary>
         /// Method that maps event into AuditModel. The diff caused by the event must be passed.
@@ -33,12 +40,5 @@ namespace Lykke.Snow.AuditService.Domain.Services
         /// <param name="diff"></param>
         /// <returns></returns>
         AuditModel<AuditDataType> MapAuditEvent(T evt, string diff);
-        
-        /// <summary>
-        /// Returns the 'state' of the entity - which the diff will be built based on. (Entity payload)
-        /// </summary>
-        /// <param name="evt"></param>
-        /// <returns></returns>
-        string GetStateInJson(T evt);
     }
 }
