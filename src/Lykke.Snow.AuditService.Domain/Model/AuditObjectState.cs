@@ -11,10 +11,10 @@ namespace Lykke.Snow.AuditService.Domain.Model
     /// </summary>
     public class AuditObjectState
     {
-        public string DataReference { get; set; }
-        public AuditDataType DataType { get; set; }
-        public string StateInJson { get; set; }
-        public DateTime LastModified { get; set; }
+        public string DataReference { get; }
+        public AuditDataType DataType { get; }
+        public string StateInJson { get; }
+        public DateTime LastModified { get; }
         
         public AuditObjectState(AuditDataType dataType, string dataReference, string stateInJson, DateTime lastModified)
         {

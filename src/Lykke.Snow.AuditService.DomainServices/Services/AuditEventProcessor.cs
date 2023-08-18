@@ -5,6 +5,7 @@ using System;
 using System.Threading.Tasks;
 using Lykke.Snow.AuditService.Domain.Repositories;
 using Lykke.Snow.AuditService.Domain.Services;
+using Microsoft.Extensions.Logging;
 
 namespace Lykke.Snow.AuditService.DomainServices.Services
 {
@@ -14,16 +15,20 @@ namespace Lykke.Snow.AuditService.DomainServices.Services
         private readonly IAuditObjectStateRepository _auditObjectStateRepository;
         private readonly IObjectDiffService _objectDiffService;
         private readonly IAuditObjectStateFactory _auditObjectStateFactory;
+        private readonly ILogger<AuditEventProcessor> _logger;
 
         public AuditEventProcessor(IAuditEventRepository auditEventRepository,
             IAuditObjectStateRepository auditObjectStateRepository,
             IObjectDiffService objectDiffService,
-            IAuditObjectStateFactory auditObjectStateFactory)
+            IAuditObjectStateFactory auditObjectStateFactory,
+            ILogger<AuditEventProcessor> logger)
         {
             _auditEventRepository = auditEventRepository;
             _auditObjectStateRepository = auditObjectStateRepository;
             _objectDiffService = objectDiffService;
             _auditObjectStateFactory = auditObjectStateFactory;
+            _logger = logger;
+
         }
 
         public async Task ProcessEvent<T>(T evt, IAuditEventMapper<T> eventMapper)
@@ -44,9 +49,17 @@ namespace Lykke.Snow.AuditService.DomainServices.Services
                         dataReference: auditModel.DataReference, 
                         lastModified: auditModel.Timestamp);
 
-            await _auditObjectStateRepository.AddOrUpdate(newAuditObjectState);
-
             await _auditEventRepository.AddAsync(auditModel);
+            
+            if(oldState != null && newAuditObjectState.LastModified < oldState.LastModified)
+            {
+                _logger.LogWarning("Timestamp for entity state is older than the existing state - the event has been ignored. \n Existing object: {@ExistingObject} \n New object: {@NewObject}",
+                    oldState, newAuditObjectState);
+                
+                return;
+            }
+
+            await _auditObjectStateRepository.AddOrUpdate(newAuditObjectState);
         }
         
         public string GetJsonDiff(string oldState, string newState)
