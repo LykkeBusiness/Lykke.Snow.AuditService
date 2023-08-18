@@ -22,6 +22,11 @@ namespace Lykke.Snow.AuditService.DomainServices.AuditEventMappers
             return evt.RfqSnapshot.Id;
         }
 
+        public string GetStateInJson(RfqEvent evt)
+        {
+            return evt.RfqSnapshot.ToJson();
+        }
+
         public AuditModel<AuditDataType> MapAuditEvent(RfqEvent rfqEvent, string diff)
         {
             var username = GetEventUsername(rfqEvent);
@@ -41,12 +46,7 @@ namespace Lykke.Snow.AuditService.DomainServices.AuditEventMappers
             return auditEvent;
         }
 
-        public string GetStateInJson(RfqEvent evt)
-        {
-            return evt.RfqSnapshot.ToJson();
-        }
-        
-       public string GetEventUsername(RfqEvent rfqEvent)
+        public string GetEventUsername(RfqEvent rfqEvent)
         {
             string username = string.Empty;
             

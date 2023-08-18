@@ -14,19 +14,16 @@ namespace Lykke.Snow.AuditService.DomainServices.Services
         private readonly IAuditObjectStateRepository _auditObjectStateRepository;
         private readonly IObjectDiffService _objectDiffService;
         private readonly IAuditObjectStateFactory _auditObjectStateFactory;
-        private readonly IServiceProvider _serviceProvider;
 
         public AuditEventProcessor(IAuditEventRepository auditEventRepository,
             IAuditObjectStateRepository auditObjectStateRepository,
             IObjectDiffService objectDiffService,
-            IAuditObjectStateFactory auditObjectStateFactory,
-            IServiceProvider serviceProvider)
+            IAuditObjectStateFactory auditObjectStateFactory)
         {
             _auditEventRepository = auditEventRepository;
             _auditObjectStateRepository = auditObjectStateRepository;
             _objectDiffService = objectDiffService;
             _auditObjectStateFactory = auditObjectStateFactory;
-            _serviceProvider = serviceProvider;
         }
 
         public async Task ProcessEvent<T>(T evt, IAuditEventMapper<T> eventMapper)
