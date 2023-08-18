@@ -107,6 +107,9 @@ namespace Lykke.Snow.AuditService.SqlRepositories.Repositories
             AuditObjectState objectState,
             AuditObjectStateEntity existingEntity)
         {
+            if(objectState.LastModified < existingEntity.LastModified)
+                return;
+
             _mapper.Map(objectState, existingEntity);
             context.AuditObjectStates.Update(existingEntity);
             try
