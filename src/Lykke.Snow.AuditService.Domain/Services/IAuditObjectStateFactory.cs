@@ -14,8 +14,8 @@ namespace Lykke.Snow.AuditService.Domain.Services
     {
         AuditObjectState Create(
             AuditDataType auditDataType, 
-            string currentStateInJson,
             string dataReference,
+            string currentStateInJson,
             DateTime lastModified);
     }
 }

@@ -16,7 +16,7 @@ namespace Lykke.Snow.AuditService.DomainServices.Services
     /// </summary>
     public class AuditObjectStateFactory : IAuditObjectStateFactory
     {
-        public AuditObjectState Create(AuditDataType auditDataType, string currentStateInJson, string dataReference, DateTime lastModified)
+        public AuditObjectState Create(AuditDataType auditDataType, string dataReference, string currentStateInJson, DateTime lastModified)
         {
             return new AuditObjectState(dataType: auditDataType, dataReference: dataReference, stateInJson: currentStateInJson, lastModified: lastModified);
         }
