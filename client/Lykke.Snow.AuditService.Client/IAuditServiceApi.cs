@@ -27,14 +27,5 @@ namespace Lykke.Snow.AuditService.Client
         /// <returns></returns>
         [Get("/api/audit/rfq")]
         Task<PaginatedResponse<AuditModel<AuditDataTypeContract>>> GetRfqAuditEvents(GetRfqAuditEventsRequest request, int? skip = null, int? take = null);
-
-        /// <summary>
-        /// Endpoint for getting rfq audit events with filters in CSV format.
-        /// Please set Accept: text/csv header
-        /// </summary>
-        /// <param name="request"></param>
-        /// <returns></returns>
-        [Get("/api/audit/rfq/csv")]
-        Task<IList<AuditModel<AuditDataTypeContract>>> ExportRfqAuditEventsToCSV(GetRfqAuditEventsRequest request);
     }
 }
