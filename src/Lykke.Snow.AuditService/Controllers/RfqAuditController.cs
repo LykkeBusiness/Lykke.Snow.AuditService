@@ -12,7 +12,6 @@ using Lykke.Snow.AuditService.Domain.Enum;
 using Lykke.Snow.AuditService.Domain.Model;
 using Lykke.Snow.AuditService.Domain.Services;
 using Lykke.Snow.AuditService.Settings;
-using Lykke.Snow.Common.Startup;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -50,26 +49,6 @@ namespace Lykke.Snow.AuditService.Controllers
             var result = await _auditEventService.GetAll(filter, jsonDiffFilter, skip, take);
             
             return result;
-        }
-
-        [HttpGet("csv")]
-        [ProducesResponseType((int)HttpStatusCode.OK)]
-        [ProducesResponseType((int)HttpStatusCode.Forbidden)]
-        [ProducesResponseType((int)HttpStatusCode.BadRequest)]
-        public async Task<IActionResult> Csv([FromQuery] GetRfqAuditEventsRequest request)
-        {
-            var filter = _mapper.Map<AuditTrailFilter<AuditDataType>>(request);
-
-            JsonDiffFilter jsonDiffFilter = null!;
-
-            if (request.ActionType == AuditEventType.Edition && request.RefinedEditActionType == RfqRefinedEditActionTypeContract.StatusChanged)
-                jsonDiffFilter = new JsonDiffFilter(nameof(request.State));
-
-            var result = await _auditEventService.GetAll(filter, jsonDiffFilter);
-
-            this.TrySetCsvSettings(_auditServiceSettings.CsvExportSettings.Delimiter, _auditServiceSettings.CsvExportSettings.ShouldOutputHeader);
-
-            return Ok(result.Contents);
         }
     }
 }
