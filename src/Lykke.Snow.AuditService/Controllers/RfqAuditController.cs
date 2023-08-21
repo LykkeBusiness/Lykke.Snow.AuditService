@@ -1,6 +1,7 @@
 // Copyright (c) 2023 Lykke Corp.
 // See the LICENSE file in the project root for more information.
 
+using System.Collections.Generic;
 using System.Net;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -41,12 +42,12 @@ namespace Lykke.Snow.AuditService.Controllers
         {
             var filter = _mapper.Map<AuditTrailFilter<AuditDataType>>(request);
 
-            JsonDiffFilter jsonDiffFilter = null!;
+            var jsonDiffFilters = new List<JsonDiffFilter>();
 
             if (request.ActionType == AuditEventType.Edition && request.RefinedEditActionType == RfqRefinedEditActionTypeContract.StatusChanged)
-                jsonDiffFilter = new JsonDiffFilter(nameof(request.State));
+                jsonDiffFilters.Add(new JsonDiffFilter(nameof(request.State)));
 
-            var result = await _auditEventService.GetAll(filter, jsonDiffFilter, skip, take);
+            var result = await _auditEventService.GetAll(filter, jsonDiffFilters, skip, take);
             
             return result;
         }

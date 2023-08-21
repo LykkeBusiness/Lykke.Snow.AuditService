@@ -47,7 +47,7 @@ namespace Lykke.Snow.AuditService.Tests
 
             var sut = CreateSut(auditEventRepositoryArg: mockAuditEventRepository.Object);
             
-            await sut.GetAll(filter);
+            await sut.GetAll(filter, new List<JsonDiffFilter>());
             
             mockAuditEventRepository.Verify(x => x.GetAllAsync(It.Is<AuditTrailFilter<AuditDataType>>(
                 f => f.DataTypes == filter.DataTypes &&
@@ -75,11 +75,12 @@ namespace Lykke.Snow.AuditService.Tests
             var sut = CreateSut(mockAuditEventRepository.Object, mockObjectDiffService.Object);
             
             var jsonDiffFilter = new JsonDiffFilter(propertyName: "SamplePropertyName");
+            var jsonDiffFilters = new List<JsonDiffFilter> { jsonDiffFilter };
             
-            await sut.GetAll(filter, jsonDiffFilter);
+            await sut.GetAll(filter, jsonDiffFilters);
             
             mockObjectDiffService.Verify(x => x.FilterBasedOnJsonDiff(It.IsAny<IList<IAuditModel<AuditDataType>>>(), 
-                It.Is<JsonDiffFilter>(x => x == jsonDiffFilter)), 
+                It.Is<IEnumerable<JsonDiffFilter>>(x => x == jsonDiffFilters)), 
                 Times.Once);
         }
 
@@ -107,7 +108,7 @@ namespace Lykke.Snow.AuditService.Tests
             
             var sut = CreateSut(mockAuditEventRepository.Object, mockObjectDiffService.Object);
             
-            var result = await sut.GetAll(filter, jsonDiffFilter: null, skip, take);
+            var result = await sut.GetAll(filter, new List<JsonDiffFilter>(), skip, take);
             
             Assert.Equal(expectedArrayLength, result.Contents.Count);
             Assert.Equal(expectedStart, result.Start);

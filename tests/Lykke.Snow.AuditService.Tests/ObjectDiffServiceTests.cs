@@ -147,6 +147,8 @@ namespace Lykke.Snow.AuditService.Tests
         
         /// <summary>
         /// Test method that tests if json diff filter work when the diff the client is interested in is the only diff.
+        //  In this test there's two auditEvents in the collection 
+        //  The aimed auditEvent has only one property - which is the one that the client is interested in
         /// </summary>
         [Fact]
         public void FilterBasedOnJsonDiff_WithoutAnyExtraDiff_ShouldWorkAsExpected()
@@ -175,22 +177,24 @@ namespace Lykke.Snow.AuditService.Tests
                 " 
             };
             
-            var list = new List<IAuditModel<AuditDataType>>();
-            list.Add(auditEvent1);
-            list.Add(auditEvent2);
+            var list = new List<IAuditModel<AuditDataType>>
+            {
+                auditEvent1, 
+                auditEvent2
+            };
 
             var sut = CreateSut();
             
             var jsonDiffFilter = new JsonDiffFilter(propertyName: "State");
 
-            var actual = sut.FilterBasedOnJsonDiff(list, jsonDiffFilter);
+            var actual = sut.FilterBasedOnJsonDiff(list, new List<JsonDiffFilter>() { jsonDiffFilter });
             var item = Assert.Single(actual);
 
             Assert.Equal(auditEvent1, item);
         }
 
         /// <summary>
-        /// Test method that tests if json diff filter works when there's more properties than the one client is interested in.hat tests if json diff filter works when there's more properties than the one client is interested in.
+        /// Test method that tests if json diff filter works when there's more properties than the one client is interested in.
         /// </summary>
         [Fact]
         public void FilterBasedOnJsonDiff_WithMorePropertyDiffs_ShouldWorkAsExpected()
@@ -227,15 +231,17 @@ namespace Lykke.Snow.AuditService.Tests
                 " 
             };
             
-            var list = new List<IAuditModel<AuditDataType>>();
-            list.Add(auditEvent1);
-            list.Add(auditEvent2);
+            var list = new List<IAuditModel<AuditDataType>>()
+            {
+                auditEvent1,
+                auditEvent2
+            };
 
             var sut = CreateSut();
             
             var jsonDiffFilter = new JsonDiffFilter(propertyName: "State");
 
-            var actual = sut.FilterBasedOnJsonDiff(list, jsonDiffFilter);
+            var actual = sut.FilterBasedOnJsonDiff(list, new List<JsonDiffFilter> { jsonDiffFilter });
             var item = Assert.Single(actual);
 
             Assert.Equal(auditEvent1, item);
@@ -291,10 +297,194 @@ namespace Lykke.Snow.AuditService.Tests
             
             var jsonDiffFilter = new JsonDiffFilter(propertyName: "RequestNumber");
 
-            var actual = sut.FilterBasedOnJsonDiff(list, jsonDiffFilter);
+            var actual = sut.FilterBasedOnJsonDiff(list, new List<JsonDiffFilter> { jsonDiffFilter });
             var count = actual.Count();
             
             Assert.Equal(2, count);
+            
+            Assert.Collection(actual, 
+                (item) => Assert.Equal(auditEvent1, item),
+                (item) => Assert.Equal(auditEvent2, item));
+        }
+
+        /// <summary>
+        /// Test method that tests if json diff filter works when there's multiple Properties which are targeted by the JsonDiffFilter.
+        /// </summary>
+        [Fact]
+        public void FilterBasedOnJsonDiff_WithMultipleJsonDiffFilter_ShouldReturnCorrectItems_1()
+        {
+            var auditEvent1 = new AuditModel<AuditDataType>() 
+            { 
+                DataDiff = @"
+                    {
+                        ""State"": [
+                            ""Initiated"",
+                            ""Started""
+                        ],
+                        ""RequestNumber"": [
+                            4,
+                            5
+                        ],
+                        ""InstrumentId"": [
+                            ""old-instrument"",
+                            ""new-instrument""
+                        ]
+                    }
+                " 
+            };
+
+            var auditEvent2 = new AuditModel<AuditDataType>() 
+            { 
+                DataDiff = @"
+                    {
+                        ""RequestNumber"": [
+                            4,
+                            5
+                        ],
+                        ""InstrumentId"": [
+                            ""old-instrument"",
+                            ""new-instrument""
+                        ]
+                    }
+                " 
+            };
+
+            var auditEvent3 = new AuditModel<AuditDataType>() 
+            { 
+                DataDiff = @"
+                    {
+                        ""InstrumentId"": [
+                            ""old-instrument"",
+                            ""new-instrument""
+                        ]
+                    }
+                " 
+            };
+
+            var auditEvent4 = new AuditModel<AuditDataType>() 
+            { 
+                DataDiff = @"
+                    {
+                        ""RequestNumber"": [
+                            7,
+                            8
+                        ]
+                    }
+                " 
+            };
+            
+            var list = new List<IAuditModel<AuditDataType>>
+            {
+                auditEvent1,
+                auditEvent2,
+                auditEvent3,
+                auditEvent4
+            };
+
+            var sut = CreateSut();
+            
+            var jsonDiffFilter1 = new JsonDiffFilter(propertyName: "State");
+            var jsonDiffFilter2 = new JsonDiffFilter(propertyName: "RequestNumber");
+
+            var actual = sut.FilterBasedOnJsonDiff(list, new List<JsonDiffFilter> { jsonDiffFilter1, jsonDiffFilter2 });
+            var count = actual.Count();
+            
+            Assert.Equal(3, count);
+            
+            Assert.Collection(actual, 
+                (item) => Assert.Equal(auditEvent1, item),
+                (item) => Assert.Equal(auditEvent2, item),
+                (item) => Assert.Equal(auditEvent4, item));
+        }
+
+        /// <summary>
+        /// Test method that tests if json diff filter works when there's multiple Property which is targeted by the JsonDiffFilter.
+        /// In this test method the collection contains three element. And json filter targets three properties.
+        /// One of them has one of the targeted properties.
+        /// The rest of the auditevents does not contain any of targeted properties.
+        /// </summary>
+        [Fact]
+        public void FilterBasedOnJsonDiff_WithMultipleJsonDiffFilter_ShouldReturnCorrectItems_2()
+        {
+            var auditEvent1 = new AuditModel<AuditDataType>() 
+            { 
+                DataDiff = @"
+                    {
+                        ""State"": [
+                            ""Initiated"",
+                            ""Started""
+                        ]
+                    }
+                " 
+            };
+
+            var auditEvent2 = new AuditModel<AuditDataType>() 
+            { 
+                DataDiff = @"
+                    {
+                        ""InstrumentId"": [
+                            ""old-instrument"",
+                            ""new-instrument""
+                        ]
+                    }
+                " 
+            };
+
+            var auditEvent3 = new AuditModel<AuditDataType>() 
+            { 
+                DataDiff = @"
+                    {
+                        ""LastUpdatedBy"": [
+                            ""user1"",
+                            ""user2""
+                        ]
+                    }
+                " 
+            };
+
+            var auditEvent4 = new AuditModel<AuditDataType>() 
+            { 
+                DataDiff = @"
+                    {
+                        ""Provider"": [
+                            ""provider1"",
+                            ""provider2""
+                        ]
+                    }
+                " 
+            };
+            
+            var list = new List<IAuditModel<AuditDataType>>
+            {
+                auditEvent1,
+                auditEvent2,
+                auditEvent3,
+                auditEvent4,
+            };
+
+            var sut = CreateSut();
+            
+            var jsonDiffFilter1 = new JsonDiffFilter(propertyName: "CorrelationId");
+            var jsonDiffFilter2 = new JsonDiffFilter(propertyName: "RequestNumber");
+            var jsonDiffFilter3 = new JsonDiffFilter(propertyName: "Timestamp");
+            var jsonDiffFilter4 = new JsonDiffFilter(propertyName: "Provider");
+
+
+            var jsonDiffFilters = new List<JsonDiffFilter>
+            {
+                jsonDiffFilter1,
+                jsonDiffFilter2,
+                jsonDiffFilter3,
+                jsonDiffFilter4,
+            };
+
+            var actual = sut.FilterBasedOnJsonDiff(list, jsonDiffFilters);
+            var count = actual.Count();
+            
+            Assert.Equal(1, count);
+            
+            Assert.Collection(actual, 
+                (item) => Assert.Equal(item, auditEvent4));
         }
         
         [Fact]
@@ -318,7 +508,7 @@ namespace Lykke.Snow.AuditService.Tests
 
             var jsonDiffFilter = new JsonDiffFilter(propertyName: "RequestNumber");
             
-            Assert.Throws<JsonReaderException>(() => sut.FilterBasedOnJsonDiff(list, jsonDiffFilter).ToList());
+            Assert.Throws<JsonReaderException>(() => sut.FilterBasedOnJsonDiff(list, new List<JsonDiffFilter> { jsonDiffFilter }).ToList());
         }
 
         private ObjectDiffService CreateSut()

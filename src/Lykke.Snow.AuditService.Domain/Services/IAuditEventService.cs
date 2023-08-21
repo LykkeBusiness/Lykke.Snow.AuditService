@@ -1,7 +1,8 @@
-using System.Threading.Tasks;
 // Copyright (c) 2023 Lykke Corp.
 // See the LICENSE file in the project root for more information.
 
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using Lykke.Contracts.Responses;
 using Lykke.Snow.Audit;
 using Lykke.Snow.Audit.Abstractions;
@@ -22,7 +23,7 @@ namespace Lykke.Snow.AuditService.Domain.Services
         /// <returns></returns>
         Task<PaginatedResponse<IAuditModel<AuditDataType>>> GetAll(
             AuditTrailFilter<AuditDataType> filter, 
-            JsonDiffFilter? jsonDiffFilter = null,
+            IEnumerable<JsonDiffFilter> jsonDiffFilters,
             int? skip = null, 
             int? take = null);
     }
