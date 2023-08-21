@@ -8,12 +8,21 @@ using Lykke.Snow.Audit.Abstractions;
 using Lykke.Snow.AuditService.Domain.Enum;
 using Lykke.Snow.AuditService.Domain.Model;
 using Lykke.Snow.AuditService.Domain.Services;
+using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace Lykke.Snow.AuditService.DomainServices.Services
 {
     public class ObjectDiffService : IObjectDiffService
     {
+        private readonly ILogger<ObjectDiffService> _logger;
+
+        public ObjectDiffService(ILogger<ObjectDiffService> logger)
+        {
+            _logger = logger;
+        }
+
         public string GenerateNewJsonDiff<T>(T newState)
         {
             var oldStateJson = "{}";
@@ -48,12 +57,21 @@ namespace Lykke.Snow.AuditService.DomainServices.Services
         {
             foreach(var auditEvent in auditEvents)
             {
-                var diff = auditEvent.DataDiff;
-                
-                if(string.IsNullOrEmpty(diff))
+                if(string.IsNullOrEmpty(auditEvent.DataDiff))
                     continue;
 
-                JObject jobject = JObject.Parse(auditEvent.DataDiff);
+                JObject jobject = new JObject();
+
+                try 
+                {
+                    jobject = JObject.Parse(auditEvent.DataDiff);
+                }
+                catch(JsonReaderException e)
+                {
+                    _logger.LogError(e, "DataDiff was not a valid json. AuditEvent: {AuditEvent}", auditEvent.ToJson());
+                    
+                    throw;
+                }
 
                 var properties = jobject.Properties();
                 

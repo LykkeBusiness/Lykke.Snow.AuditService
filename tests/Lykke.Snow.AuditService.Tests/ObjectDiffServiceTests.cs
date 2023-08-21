@@ -8,6 +8,9 @@ using Lykke.Snow.Audit.Abstractions;
 using Lykke.Snow.AuditService.Domain.Enum;
 using Lykke.Snow.AuditService.Domain.Model;
 using Lykke.Snow.AuditService.DomainServices.Services;
+using Microsoft.Extensions.Logging;
+using Moq;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Xunit;
 
@@ -293,10 +296,36 @@ namespace Lykke.Snow.AuditService.Tests
             
             Assert.Equal(2, count);
         }
+        
+        [Fact]
+        public void FilterBasedOnJsonDiff_ShouldThrowJsonReaderException_WhenInvalidJsonPassed()
+        {
+            var auditEvent1 = new AuditModel<AuditDataType>() 
+            { 
+                DataDiff = "invalid-json" 
+            };
+
+            var auditEvent2 = new AuditModel<AuditDataType>() 
+            { 
+                DataDiff = "invalid-json"
+            };
+            
+            var list = new List<IAuditModel<AuditDataType>>();
+            list.Add(auditEvent1);
+            list.Add(auditEvent2);
+
+            var sut = CreateSut();
+
+            var jsonDiffFilter = new JsonDiffFilter(propertyName: "RequestNumber");
+            
+            Assert.Throws<JsonReaderException>(() => sut.FilterBasedOnJsonDiff(list, jsonDiffFilter).ToList());
+        }
 
         private ObjectDiffService CreateSut()
         {
-            return new ObjectDiffService();
+            var mockLogger = new Mock<ILogger<ObjectDiffService>>();
+
+            return new ObjectDiffService(mockLogger.Object);
         }
     }
 }
