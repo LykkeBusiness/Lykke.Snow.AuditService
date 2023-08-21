@@ -3,6 +3,7 @@
 
 using System;
 using Lykke.SettingsReader;
+using Lykke.Snow.AuditService.MappingProfiles;
 using Lykke.Snow.AuditService.Settings;
 using Lykke.Snow.Common.Startup;
 using Lykke.Snow.Common.Startup.ApiKey;
@@ -45,6 +46,8 @@ namespace Lykke.Snow.AuditService.Startup
                         options.AddApiKeyAwareness();
                 })
                 .AddSwaggerGenNewtonsoftSupport();
+
+            services.AddAutoMapper(typeof(MappingProfile).Assembly);
 
             return services;
         }

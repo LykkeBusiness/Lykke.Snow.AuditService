@@ -9,4 +9,8 @@
   <ItemGroup>
     <ProjectReference Include="..\Lykke.Snow.AuditService.Domain\Lykke.Snow.AuditService.Domain.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="JsonDiffPatch.Net" Version="2.3.0" />
+    <PackageReference Include="LykkeBiz.Common" Version="8.1.0" />
+  </ItemGroup>
 </Project>

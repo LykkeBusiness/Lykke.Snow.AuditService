@@ -3,6 +3,8 @@
 
 using Autofac;
 using Lykke.Middlewares.Mappers;
+using Lykke.Snow.AuditService.Domain.Services;
+using Lykke.Snow.AuditService.DomainServices.Services;
 using Lykke.Snow.AuditService.Startup;
 using Microsoft.AspNetCore.Authentication;
 
@@ -26,6 +28,18 @@ namespace Lykke.Snow.AuditService.Modules
             
             builder.RegisterType<StartupManager>()
                 .AsSelf()
+                .SingleInstance();
+
+            builder.RegisterType<AuditEventProcessor>()
+                .As<IAuditEventProcessor>()
+                .SingleInstance();
+
+            builder.RegisterType<ObjectDiffService>()
+                .As<IObjectDiffService>()
+                .SingleInstance();
+
+            builder.RegisterType<AuditObjectStateFactory>()
+                .As<IAuditObjectStateFactory>()
                 .SingleInstance();
         }
     }

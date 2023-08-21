@@ -36,6 +36,9 @@ namespace Lykke.Snow.AuditService.Startup
                 {
                     // register Autofac modules here
                     cBuilder.RegisterModule(new ServiceModule());
+                    cBuilder.RegisterModule(new DalModule(settings.CurrentValue.AuditService));
+                    cBuilder.RegisterModule(new RabbitMqModule(settings.CurrentValue.AuditService));
+                    cBuilder.RegisterModule(new AuditEventMapperModule());
                 })
                 .UseSerilog((_, cfg) =>
                 {
