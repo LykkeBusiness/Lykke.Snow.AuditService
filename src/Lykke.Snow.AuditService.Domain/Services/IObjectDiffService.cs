@@ -43,8 +43,8 @@ namespace Lykke.Snow.AuditService.Domain.Services
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="auditEvents"></param>
-        /// <param name="jsonDiffFilter"></param>
+        /// <param name="jsonDiffFilters"></param>
         /// <returns></returns>
-        IEnumerable<IAuditModel<AuditDataType>> FilterBasedOnJsonDiff(IList<IAuditModel<AuditDataType>> auditEvents, JsonDiffFilter jsonDiffFilter);
+        IEnumerable<IAuditModel<AuditDataType>> FilterBasedOnJsonDiff(IList<IAuditModel<AuditDataType>> auditEvents, IEnumerable<JsonDiffFilter> jsonDiffFilters);
     }
 }

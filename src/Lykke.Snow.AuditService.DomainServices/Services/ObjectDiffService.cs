@@ -2,6 +2,7 @@
 // See the LICENSE file in the project root for more information.
 
 using System.Collections.Generic;
+using System.Linq;
 using Common;
 using JsonDiffPatchDotNet;
 using Lykke.Snow.Audit.Abstractions;
@@ -53,8 +54,10 @@ namespace Lykke.Snow.AuditService.DomainServices.Services
             return jsonDiff;
         }
 
-        public IEnumerable<IAuditModel<AuditDataType>> FilterBasedOnJsonDiff(IList<IAuditModel<AuditDataType>> auditEvents, JsonDiffFilter jsonDiffFilter)
+        public IEnumerable<IAuditModel<AuditDataType>> FilterBasedOnJsonDiff(IList<IAuditModel<AuditDataType>> auditEvents, IEnumerable<JsonDiffFilter> jsonDiffFilters)
         {
+            var hashset = jsonDiffFilters.Select(x => x.PropertyName).ToHashSet();
+
             foreach(var auditEvent in auditEvents)
             {
                 if(string.IsNullOrEmpty(auditEvent.DataDiff))
@@ -75,15 +78,9 @@ namespace Lykke.Snow.AuditService.DomainServices.Services
 
                 var properties = jobject.Properties();
                 
-                foreach(JProperty property in properties)
-                {
-                    if(property.Name != jsonDiffFilter.PropertyName)
-                        continue;
-
+                if(properties.Any(x => hashset.Contains(x.Name)))
                     yield return auditEvent;
-                }
             }
         }
-
     }
 }
