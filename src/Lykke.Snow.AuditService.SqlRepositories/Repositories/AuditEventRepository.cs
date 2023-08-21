@@ -45,7 +45,7 @@ namespace Lykke.Snow.AuditService.SqlRepositories.Repositories
 
                 var total = await query.CountAsync();
 
-                query = query.OrderByDescending(x => x.Timestamp);
+                query = query.OrderByDescending(x => x.Timestamp).ThenByDescending(o => o.Id);
 
                 var contents = await query.ToListAsync();
 
