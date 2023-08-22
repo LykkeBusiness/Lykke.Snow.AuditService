@@ -9,7 +9,7 @@ namespace Lykke.Snow.AuditService.Client.Model
     /// <summary>
     /// Request class for listing audit events.
     /// </summary>
-    public class GetAuditEventsRequest<TActionTypeDetails> 
+    public class GetAuditEventsRequest<TActionTypeDetails> where TActionTypeDetails: struct
     {
         /// <summary>
         /// Starting point in time for the audit events
@@ -44,6 +44,6 @@ namespace Lykke.Snow.AuditService.Client.Model
         /// <summary>
         /// Action type details
         /// </summary>
-        public TActionTypeDetails AuditEventTypeDetails { get; set; } = default!;
+        public TActionTypeDetails? AuditEventTypeDetails { get; set; }
     }
 }
