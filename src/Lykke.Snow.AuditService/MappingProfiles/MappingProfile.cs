@@ -3,10 +3,11 @@
 
 using AutoMapper;
 using Lykke.Snow.Audit;
-using Lykke.Snow.AuditService.Client.Model.Rfq;
+using Lykke.Snow.AuditService.Client.Model;
 using Lykke.Snow.AuditService.Domain.Enum;
 using Lykke.Snow.AuditService.Domain.Model;
 using Lykke.Snow.AuditService.SqlRepositories.Entities;
+using MarginTrading.Backend.Contracts.Rfq;
 
 namespace Lykke.Snow.AuditService.MappingProfiles
 {
@@ -17,13 +18,18 @@ namespace Lykke.Snow.AuditService.MappingProfiles
             CreateMap<AuditModel<AuditDataType>, AuditEventEntity>()
                 .ReverseMap();
 
-            CreateMap<AuditObjectState, AuditObjectStateEntity>()
+            CreateMap<AuditDataTypeContract, AuditDataType>()
                 .ReverseMap();
 
-            CreateMap<GetRfqAuditEventsRequest, AuditTrailFilter<AuditDataType>>()
-                .ForMember(dest => dest.DataTypes, opt => opt.MapFrom(src => new AuditDataType[] { AuditDataType.Rfq }))
-                .ForMember(dest => dest.ReferenceId, opt => opt.MapFrom(src => src.DataReference))
-                .ForMember(dest => dest.AuditEventTypeDetails, opt => opt.MapFrom(src => src.State));
+            CreateMap<AuditObjectState, AuditObjectStateEntity>()
+                .ReverseMap();
+            
+            CreateMap<JsonDiffFilter, JsonDiffFilterContract>()
+                .ReverseMap();
+
+            // GetAuditEventRequest with ActionTypeDetails = 'RfqOperationState'
+            CreateMap<GetAuditEventsRequest<RfqOperationState>, AuditTrailFilter<AuditDataType>>()
+                .ForMember(dest => dest.DataTypes, opt => opt.MapFrom(src => new AuditDataType[] { AuditDataType.Rfq }));
         }
     }
 }
