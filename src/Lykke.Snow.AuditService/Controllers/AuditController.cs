@@ -10,6 +10,7 @@ using Lykke.Contracts.Responses;
 using Lykke.Snow.Audit;
 using Lykke.Snow.Audit.Abstractions;
 using Lykke.Snow.AuditService.Client.Model;
+using Lykke.Snow.AuditService.Client.Model.Rfq;
 using Lykke.Snow.AuditService.Domain.Enum;
 using Lykke.Snow.AuditService.Domain.Model;
 using Lykke.Snow.AuditService.Domain.Services;
@@ -42,16 +43,21 @@ namespace Lykke.Snow.AuditService.Controllers
             _auditServiceSettings = auditServiceSettings;
         }
 
-        [HttpPost("rfq")]
+        [HttpGet("rfq")]
         [ProducesResponseType(typeof(PaginatedResponse<IAuditModel<AuditDataType>>), (int)HttpStatusCode.OK)]
         public async Task<PaginatedResponse<IAuditModel<AuditDataType>>> Rfq(
             [FromQuery] GetAuditEventsRequest<RfqOperationState> request, 
-            [FromBody] IList<JsonDiffFilterContract> fieldsChanged, 
+            [FromQuery] RfqRefinedEditActionTypeContract RefinedEditType, 
             int? skip = null, int? take = null)
         {
             var filter = _mapper.Map<AuditTrailFilter<AuditDataType>>(request);
-            
-            var result = await _auditEventService.GetAll(filter, fieldsChanged.Select(x => _mapper.Map<JsonDiffFilter>(x)), skip, take);
+
+            var jsonDiffFilters = new List<JsonDiffFilter>();
+
+            if (request.ActionType == AuditEventType.Edition && RefinedEditType == RfqRefinedEditActionTypeContract.StatusChanged)
+                jsonDiffFilters.Add(new JsonDiffFilter(nameof(RfqContract.State)));
+
+            var result = await _auditEventService.GetAll(filter, jsonDiffFilters, skip, take);
             
             return result;
         }
