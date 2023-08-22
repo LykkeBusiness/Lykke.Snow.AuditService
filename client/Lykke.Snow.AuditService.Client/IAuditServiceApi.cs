@@ -1,13 +1,12 @@
 ﻿// Copyright (c) 2023 Lykke Corp.
 // See the LICENSE file in the project root for more information.
 
-using System.Collections;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using JetBrains.Annotations;
 using Lykke.Contracts.Responses;
 using Lykke.Snow.Audit;
 using Lykke.Snow.AuditService.Client.Model;
+using Lykke.Snow.AuditService.Client.Model.Rfq;
 using MarginTrading.Backend.Contracts.Rfq;
 using Refit;
 
@@ -23,11 +22,11 @@ namespace Lykke.Snow.AuditService.Client
         /// Endpoint for getting rfq audit events with filters
         /// </summary>
         /// <param name="request"></param>
-        /// <param name="fieldsChanged"></param>
+        /// <param name="refinedEditType"></param>
         /// <param name="skip"></param>
         /// <param name="take"></param>
         /// <returns></returns>
         [Get("/api/audit/rfq")]
-        Task<PaginatedResponse<AuditModel<AuditDataTypeContract>>> GetRfqAuditEvents(GetAuditEventsRequest<RfqOperationState> request, IList<JsonDiffFilterContract> fieldsChanged, int? skip = null, int? take = null);
+        Task<PaginatedResponse<AuditModel<AuditDataTypeContract>>> GetRfqAuditEvents(GetAuditEventsRequest<RfqOperationState> request, RfqRefinedEditActionTypeContract? refinedEditType, int? skip = null, int? take = null);
     }
 }
