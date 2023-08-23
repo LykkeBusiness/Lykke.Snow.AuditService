@@ -38,6 +38,11 @@ namespace Lykke.Snow.AuditService.Client.Model
         public string? ReferenceId { get; set; }
 
         /// <summary>
+        /// Reference of the Audit event (DataReference)
+        /// </summary>
+        public string? AuditEventTypeDetails { get; set; }
+
+        /// <summary>
         /// Action type for the audit events
         /// </summary>
         public AuditEventType? ActionType { get; set; }

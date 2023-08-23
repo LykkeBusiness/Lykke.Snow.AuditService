@@ -25,29 +25,23 @@ namespace Lykke.Snow.AuditService.Client.Model.Proposal
                 ReferenceId = "referenceId1",
 
                 // domain filters
-                //DomainFilters = new DomainFiltersContract()
-                //{
-                //    Filters = new Dictionary<AuditDataTypeContract, List<JsonDiffFilterContract>>
-                //    {
-                //        {
-                //            // take ALL rfq domain audit events
-                //            AuditDataTypeContract.Rfq, new List<JsonDiffFilterContract>()
-                //        },
-                //        {
-                //            // take Assets domain audit events ...
-                //            AuditDataTypeContract.CorporateActions,
-                //            new List<JsonDiffFilterContract>
-                //            {
-                //                new JsonDiffFilterContract() { PropertyName = "State" },
-                //                new JsonDiffFilterContract() { PropertyName = "Price", Value = 10 }
-                //            }
-                //        }
-                //    }
-                //}
-                
-                
-                
-            };
+                DomainFilters =new Dictionary<AuditDataTypeContract, List<JsonDiffFilterContract>> 
+                {
+                        {
+                            // take ALL rfq domain audit events
+                            AuditDataTypeContract.Rfq, new List<JsonDiffFilterContract>()
+                        },
+                        {
+                            // take Assets domain audit events ...
+                            AuditDataTypeContract.CorporateActions,
+                            new List<JsonDiffFilterContract>
+                            {
+                                new JsonDiffFilterContract() { PropertyName = "State" },
+                                new JsonDiffFilterContract() { PropertyName = "Price", Value = 10 }
+                            }
+                        }
+                    }
+                };
         }
     }
 }
