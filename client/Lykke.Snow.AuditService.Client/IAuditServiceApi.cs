@@ -23,7 +23,7 @@ namespace Lykke.Snow.AuditService.Client
         /// <param name="skip"></param>
         /// <param name="take"></param>
         /// <returns></returns>
-        [Get("/api/audit")]
-        Task<PaginatedResponse<AuditModel<AuditDataTypeContract>>> GetRfqAuditEvents(GetAuditEventsRequest request, int? skip = null, int? take = null);
+        [Post("/api/audit")]
+        Task<PaginatedResponse<AuditModel<AuditDataTypeContract>>> GetAuditEvents(GetAuditEventsRequest request, int? skip = null, int? take = null);
     }
 }
