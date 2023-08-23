@@ -23,7 +23,7 @@ namespace Lykke.Snow.AuditService.Domain.Services
         /// <returns></returns>
         Task<PaginatedResponse<IAuditModel<AuditDataType>>> GetAll(
             AuditTrailFilter<AuditDataType> filter, 
-            IEnumerable<JsonDiffFilter> jsonDiffFilters,
+            IDictionary<AuditDataType, List<JsonDiffFilter>> domainFilters,
             int? skip = null, 
             int? take = null);
     }

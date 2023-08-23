@@ -12,5 +12,10 @@ namespace Lykke.Snow.AuditService.Client.Model
         /// 
         /// </summary>
         public string PropertyName { get; set; } = string.Empty;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public object? Value { get; set; }
     }
 }

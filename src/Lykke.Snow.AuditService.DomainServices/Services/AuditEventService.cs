@@ -28,14 +28,23 @@ namespace Lykke.Snow.AuditService.DomainServices.Services
             _objectDiffService = objectDiffService;
         }
 
-        public async Task<PaginatedResponse<IAuditModel<AuditDataType>>> GetAll(AuditTrailFilter<AuditDataType> filter, IEnumerable<JsonDiffFilter> jsonDiffFilters, int? skip = null, int? take = null)
+        public async Task<PaginatedResponse<IAuditModel<AuditDataType>>> GetAll(AuditTrailFilter<AuditDataType> filter, IDictionary<AuditDataType, List<JsonDiffFilter>> domainFilters, int? skip = null, int? take = null)
         {
             (skip, take) = PaginationUtils.ValidateSkipAndTake(skip, take);
             
-            var results = await _auditEventRepository.GetAllAsync(filter);
+            List<IAuditModel<AuditDataType>> results = new List<IAuditModel<AuditDataType>>();
 
-            if(jsonDiffFilters.Any())
-                results = _objectDiffService.FilterBasedOnJsonDiff(results, jsonDiffFilters).ToList();
+            foreach(var domainFilter in domainFilters)
+            {
+                filter.DataTypes = new AuditDataType[] { domainFilter.Key };
+                var subResults = await _auditEventRepository.GetAllAsync(filter);
+                
+                // Apply domain filters (json diff filters)
+                if(domainFilter.Value.Count > 0)
+                    subResults = _objectDiffService.FilterBasedOnJsonDiff(subResults, jsonDiffFilters: domainFilter.Value).ToList();
+
+                results.AddRange(subResults);
+            }
 
             var total = results.Count;
 

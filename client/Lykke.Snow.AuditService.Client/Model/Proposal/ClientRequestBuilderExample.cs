@@ -9,33 +9,6 @@ using Newtonsoft.Json.Linq;
 
 namespace Lykke.Snow.AuditService.Client.Model.Proposal
 {
-    internal static class FilterExamples 
-    {
-        public static AuditDomainDataTypeFilter QuoteIdChanged = new AuditDomainDataTypeFilter
-        {
-            Filter = jsonDiff => jsonDiff.Contains("QuoteId")
-        };
-        
-        public static AuditDomainDataTypeFilter RfqFilterInitiated = new AuditDomainDataTypeFilter
-        {
-            Filter = jsonDiff => jsonDiff.Contains("State: Initiated")
-        };
-
-        public static AuditDomainDataTypeFilter ChangeNameToJohnFilter = new AuditDomainDataTypeFilter
-        {
-            Filter = jsonDiff =>
-            {
-                var jobject = JObject.Parse(jsonDiff);
-                var firstNameToken = jobject["FirstName"];
-
-                if (firstNameToken == null)
-                    return false;
-
-                return (firstNameToken.Children().Count() == 2) &&
-                       (firstNameToken.Children().Last().ToString() == "John");
-            }
-        };
-    }
     
     internal static class ClientRequestBuilderExample
     {
@@ -48,44 +21,32 @@ namespace Lykke.Snow.AuditService.Client.Model.Proposal
                 EndDateTime = new DateTime(2021, 1, 2),
                 UserName = "user1",
                 CorrelationId = "correlationId1",
-                AuditEventType = AuditEventType.Create,
+                ActionType = Audit.AuditEventType.Creation,
                 ReferenceId = "referenceId1",
 
                 // domain filters
-                DomainFilters = new Dictionary<AuditDomain, IAuditDomainFilter?>
-                {
-                    {
-                        // take Core domain audit events ...
-                        AuditDomain.Core, new AuditDomainFilter
-                        {
-                            DataTypeFilters = new Dictionary<string, IAuditDomainDataTypeFilter?>
-                            {
-                                // ... but inside domain take only Rfq initiated events ...
-                                { "Rfq", FilterExamples.RfqFilterInitiated },
-                                // ... and only quote changed events ...
-                                { "Quote", FilterExamples.QuoteIdChanged },
-                                // ... and all order events
-                                { "Order", null }
-                            }
-                        }
-                    },
-                    {
-                        // take ALL axle domain audit events
-                        AuditDomain.Axle, null
-                    },
-                    {
-                        // take Assets domain audit events ...
-                        AuditDomain.Assets,
-                        new AuditDomainFilter
-                        {
-                            DataTypeFilters = new Dictionary<string, IAuditDomainDataTypeFilter?>
-                            {
-                                // ... but inside domain take only Person events where name changed to John
-                                { "Person", FilterExamples.ChangeNameToJohnFilter }
-                            }
-                        }
-                    }
-                }
+                //DomainFilters = new DomainFiltersContract()
+                //{
+                //    Filters = new Dictionary<AuditDataTypeContract, List<JsonDiffFilterContract>>
+                //    {
+                //        {
+                //            // take ALL rfq domain audit events
+                //            AuditDataTypeContract.Rfq, new List<JsonDiffFilterContract>()
+                //        },
+                //        {
+                //            // take Assets domain audit events ...
+                //            AuditDataTypeContract.CorporateActions,
+                //            new List<JsonDiffFilterContract>
+                //            {
+                //                new JsonDiffFilterContract() { PropertyName = "State" },
+                //                new JsonDiffFilterContract() { PropertyName = "Price", Value = 10 }
+                //            }
+                //        }
+                //    }
+                //}
+                
+                
+                
             };
         }
     }

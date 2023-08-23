@@ -12,5 +12,13 @@ namespace Lykke.Snow.AuditService.Client.Model
         /// Rfq audit events
         /// </summary>
         Rfq = 0,
+        /// <summary>
+        /// 
+        /// </summary>
+        Axle,
+        /// <summary>
+        /// 
+        /// </summary>
+        CorporateActions,
     }
 }
