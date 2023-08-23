@@ -13,9 +13,6 @@ using Lykke.Snow.AuditService.Domain.Repositories;
 using Lykke.Snow.AuditService.Domain.Services;
 using Lykke.Snow.Common;
 
-using Refit;
-
-
 namespace Lykke.Snow.AuditService.DomainServices.Services
 {
     public class AuditEventService : IAuditEventService
@@ -31,7 +28,8 @@ namespace Lykke.Snow.AuditService.DomainServices.Services
             _objectDiffService = objectDiffService;
         }
 
-        public async Task<PaginatedResponse<IAuditModel<AuditDataType>>> GetAll(AuditTrailFilter<AuditDataType> filter, IDictionary<AuditDataType, List<JsonDiffFilter>> domainFilters, int? skip = null, int? take = null)
+        public async Task<PaginatedResponse<IAuditModel<AuditDataType>>> GetAll(AuditTrailFilter<AuditDataType> filter, 
+            IDictionary<AuditDataType, List<JsonDiffFilter>> domainFilters, int? skip = null, int? take = null)
         {
             (skip, take) = PaginationUtils.ValidateSkipAndTake(skip, take);
             
@@ -51,6 +49,9 @@ namespace Lykke.Snow.AuditService.DomainServices.Services
                 if(domainFilter.Value.Count > 0)
                     typeFiltered = _objectDiffService.FilterBasedOnJsonDiff(typeFiltered, jsonDiffFilters: domainFilter.Value).ToList();
                 
+                // Add the subset to the main result set - 
+                // Please keep in mind that if multiple filters passed with different types
+                // This filter will act as an OR operator.
                 results.AddRange(typeFiltered);
             }
 
