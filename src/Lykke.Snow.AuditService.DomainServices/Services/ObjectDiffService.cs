@@ -102,8 +102,6 @@ namespace Lykke.Snow.AuditService.DomainServices.Services
                 
                 string? propValue = string.Empty;
                 
-                var x = prop.Value.Count();
-
                 // Value initialization - there's no old value
                 if(prop.Value.Count() == 1)
                     propValue = prop.Value[0]?.Value<string>();
@@ -111,7 +109,7 @@ namespace Lykke.Snow.AuditService.DomainServices.Services
                 else if(prop.Value.Count() == 2)
                     propValue = prop.Value[1]?.Value<string>();
 
-                // Values are equal, add  result collection
+                // Values are equal, add to the result collection
                 if(filter.Value.ToString() == propValue)
                     return true;
             }
