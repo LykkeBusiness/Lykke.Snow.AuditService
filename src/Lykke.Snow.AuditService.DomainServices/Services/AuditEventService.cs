@@ -13,6 +13,9 @@ using Lykke.Snow.AuditService.Domain.Repositories;
 using Lykke.Snow.AuditService.Domain.Services;
 using Lykke.Snow.Common;
 
+using Refit;
+
+
 namespace Lykke.Snow.AuditService.DomainServices.Services
 {
     public class AuditEventService : IAuditEventService

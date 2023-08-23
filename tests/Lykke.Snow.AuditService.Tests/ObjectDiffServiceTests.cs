@@ -487,36 +487,312 @@ namespace Lykke.Snow.AuditService.Tests
                 (item) => Assert.Equal(item, auditEvent4));
         }
 
+        /// <summary>
+        /// This test method tests FilterBasedOnJsonDiff function against test cases
+        /// Where JsonDiff filter contains a STRING value along a with a property, 
+        /// (e.g. JsonDiffFilter(propertyName: "State", value: "Started"))
+        /// This method checks if the sut returns the audit events in which the state has been transitioned to "Started"
+        /// </summary>
         [Fact]
         public void FilterBasedOnJsonDiff_ShouldWorkAsExpected_WhenFilterValueIsAString()
         {
+            var auditEvent1 = new AuditModel<AuditDataType>() 
+            { 
+                DataDiff = @"
+                    {
+                        ""State"": [
+                            ""Initiated"",
+                            ""Started""
+                        ]
+                    }
+                " 
+            };
+
+            var auditEvent2 = new AuditModel<AuditDataType>() 
+            { 
+                DataDiff = @"
+                    {
+                        ""InstrumentId"": [
+                            ""old-instrument"",
+                            ""new-instrument""
+                        ]
+                    }
+                " 
+            };
+
+            var auditEvent3 = new AuditModel<AuditDataType>() 
+            { 
+                DataDiff = @"
+                    {
+                        ""LastUpdatedBy"": [
+                            ""user1"",
+                            ""user2""
+                        ]
+                    }
+                " 
+            };
+
+            var auditEvent4 = new AuditModel<AuditDataType>() 
+            { 
+                DataDiff = @"
+                    {
+                        ""Provider"": [
+                            ""provider1"",
+                            ""provider2""
+                        ]
+                    }
+                " 
+            };
+
+            var list = new List<IAuditModel<AuditDataType>>
+            {
+                auditEvent1,
+                auditEvent2,
+                auditEvent3,
+                auditEvent4
+            };
+            
+            var sut = CreateSut();
+            
+            var jsonDiffFilters = new List<JsonDiffFilter>
+            {
+                new JsonDiffFilter("State", "Started"),
+                new JsonDiffFilter("Provider", "provider2")
+            };
+            
+            var actual = sut.FilterBasedOnJsonDiff(list, jsonDiffFilters);
+            
+            Assert.Equal(2, actual.Count());
+            
+            Assert.Collection(actual, 
+                (item) => Assert.Equal(auditEvent1, item),
+                (item) => Assert.Equal(auditEvent4, item));
         }
         
+        /// <summary>
+        /// This test method tests FilterBasedOnJsonDiff function against test cases
+        /// Where JsonDiff filter contains an INTEGER value along a with a property, 
+        /// (e.g. JsonDiffFilter(propertyName: "State", value: "Started"))
+        /// This method checks if the sut returns the audit events in which the state has been transitioned to "Started"
+        /// </summary>
         [Fact]
         public void FilterBasedOnJsonDiff_ShouldWorkAsExpected_WhenFilterValueIsAnInteger()
         {
+            var auditEvent1 = new AuditModel<AuditDataType>() 
+            { 
+                DataDiff = @"
+                    {
+                        ""State"": [
+                            ""Initiated"",
+                            ""Started""
+                        ]
+                    }
+                " 
+            };
+
+            var auditEvent2 = new AuditModel<AuditDataType>() 
+            { 
+                DataDiff = @"
+                    {
+                        ""InstrumentId"": [
+                            ""old-instrument"",
+                            ""new-instrument""
+                        ],
+                        ""RequestNumber"": [
+                            6,
+                            7
+                        ]
+                    }
+                " 
+            };
+
+            var auditEvent3 = new AuditModel<AuditDataType>() 
+            { 
+                DataDiff = @"
+                    {
+                        ""LastUpdatedBy"": [
+                            ""user1"",
+                            ""user2""
+                        ]
+                    }
+                " 
+            };
+
+            var auditEvent4 = new AuditModel<AuditDataType>() 
+            { 
+                DataDiff = @"
+                    {
+                        ""Provider"": [
+                            ""provider1"",
+                            ""provider2""
+                        ]
+                    }
+                " 
+            };
+
+            var list = new List<IAuditModel<AuditDataType>>
+            {
+                auditEvent1,
+                auditEvent2,
+                auditEvent3,
+                auditEvent4
+            };
+            
+            var sut = CreateSut();
+            
+            var jsonDiffFilters = new List<JsonDiffFilter>
+            {
+                new JsonDiffFilter("RequestNumber", 7),
+            };
+            
+            var actual = sut.FilterBasedOnJsonDiff(list, jsonDiffFilters);
+            
+            Assert.Single(actual);
+            
+            Assert.Collection(actual, 
+                (item) => Assert.Equal(auditEvent2, item));
         }
         
+        /// <summary>
+        /// This test method tests CheckJsonProperties function against test cases
+        /// Where there's only "PropertyName" (e.g. JsonDiffFilter(propertyName: "State"))
+        /// This method checks if sut finds the match with given JsonDiffFilter
+        /// </summary>
         [Fact]
         public void CheckJsonProperties_ShouldReturnTrue_OnlyWithPropertyName()
         {
+            var jsonProperties = new List<JProperty>
+            {
+                new JProperty("State", new JArray(new string[] { "Initiated", "Started"})),
+                new JProperty("RequestNumber", new JArray(new int[] { 1, 2})),
+                new JProperty("UserName", new JArray(new string[] { "investor-1", "investor-2"})),
+                new JProperty("AccountId", new JArray(new string[] { "account-1", "account-2"}))
+            };
+            
+            var jsonDiffFilters = new List<JsonDiffFilter>
+            {
+                new JsonDiffFilter("UserName")
+            };
+            
+            var sut = CreateSut();
+            
+            var actual = sut.CheckJsonProperties(jsonProperties, jsonDiffFilters);
+            
+            Assert.True(actual);
+        }
+
+        /// <summary>
+        /// This test method tests CheckJsonProperties function against test cases
+        /// Where there's only "PropertyName" (e.g. JsonDiffFilter(propertyName: "State"))
+        /// This method checks if sut returns false when DataDiff does not contain any of given JsonDiffFilter
+        /// </summary>
+        [Fact]
+        public void CheckJsonProperties_ShouldReturnFalse_WhenPropertyDoesNotExist()
+        {
+            var jsonProperties = new List<JProperty>
+            {
+                new JProperty("State", new JArray(new string[] { "Initiated", "Started"})),
+                new JProperty("RequestNumber", new JArray(new int[] { 1, 2})),
+                new JProperty("UserName", new JArray(new string[] { "investor-1", "investor-2"})),
+                new JProperty("AccountId", new JArray(new string[] { "account-1", "account-2"}))
+            };
+            
+            var jsonDiffFilters = new List<JsonDiffFilter>
+            {
+                new JsonDiffFilter("LastModified")
+            };
+            
+            var sut = CreateSut();
+            
+            var actual = sut.CheckJsonProperties(jsonProperties, jsonDiffFilters);
+            
+            Assert.False(actual);
         }
         
+        /// <summary>
+        /// This test method tests CheckJsonProperties function against test cases
+        /// Where there's value along with "PropertyName" (e.g. JsonDiffFilter(propertyName: "State", value: "Started"))
+        /// This method checks if sut finds the value match and returns true
+        /// </summary>
         [Fact]
         public void CheckJsonProperties_ShouldReturnTrue_WhenValueIsPassed()
         {
+            var jsonProperties = new List<JProperty>
+            {
+                new JProperty("State", new JArray(new string[] { "Initiated", "Started"})),
+                new JProperty("RequestNumber", new JArray(new int[] { 1, 2})),
+                new JProperty("UserName", new JArray(new string[] { "investor-1", "investor-2"})),
+                new JProperty("AccountId", new JArray(new string[] { "account-1", "account-2"}))
+            };
+            
+            var jsonDiffFilters = new List<JsonDiffFilter>
+            {
+                new JsonDiffFilter("UserName", "investor-2")
+            };
+            
+            var sut = CreateSut();
+            
+            var actual = sut.CheckJsonProperties(jsonProperties, jsonDiffFilters);
+            
+            Assert.True(actual);
         }
 
+        /// <summary>
+        /// This test method tests CheckJsonProperties function against test cases
+        /// Where there's value along with "PropertyName" (e.g. JsonDiffFilter(propertyName: "State", value: "Started"))
+        /// This method checks if sut returns false when a different value is presented
+        /// </summary>
+        [Fact]
+        public void CheckJsonProperties_ShouldReturnFalse_WhenInvalidValueIsPassed()
+        {
+            var jsonProperties = new List<JProperty>
+            {
+                new JProperty("State", @"[""Initiated"", ""Started""]"),
+                new JProperty("RequestNumber", @"[1, 2]"),
+                new JProperty("UserName",  @"[""investor-1"", ""investor-2""]"),
+                new JProperty("AccountId", @"[""account-1"", ""account-2""]")
+            };
+            
+            var jsonDiffFilters = new List<JsonDiffFilter>
+            {
+                new JsonDiffFilter("UserName", "some-other-investor")
+            };
+            
+            var sut = CreateSut();
+            
+            var actual = sut.CheckJsonProperties(jsonProperties, jsonDiffFilters);
+            
+            Assert.False(actual);
+        }
+
+        /// <summary>
+        /// This test method tests CheckJsonProperties function against test cases
+        /// Where there's value along with "PropertyName" (e.g. JsonDiffFilter(propertyName: "State", value: "Started"))
+        /// And there's only one element in DataDiff (it's data Creation - there's no old value)
+        /// </summary>
         [Fact]
         public void CheckJsonProperties_ShouldReturnTrue_ForDiffsWithOneValue()
         {
+            var jsonProperties = new List<JProperty>
+            {
+                new JProperty("State", new JArray(new string[] { "Initiated", "Started"})),
+                new JProperty("RequestNumber", new JArray(new int[] { 1 })),
+                new JProperty("UserName", new JArray(new string[] { "investor-1", "investor-2"})),
+                new JProperty("AccountId", new JArray(new string[] { "account-1", "account-2"}))
+            };
+            
+            var jsonDiffFilters = new List<JsonDiffFilter>
+            {
+                new JsonDiffFilter("RequestNumber", 1)
+            };
+            
+            var sut = CreateSut();
+            
+            var actual = sut.CheckJsonProperties(jsonProperties, jsonDiffFilters);
+            
+            Assert.True(actual);
         }
 
-        [Fact]
-        public void CheckJsonProperties_ShouldReturnTrue_ForDiffsWithTwoValue()
-        {
-        }
-        
         [Fact]
         public void FilterBasedOnJsonDiff_ShouldThrowJsonReaderException_WhenInvalidJsonPassed()
         {
