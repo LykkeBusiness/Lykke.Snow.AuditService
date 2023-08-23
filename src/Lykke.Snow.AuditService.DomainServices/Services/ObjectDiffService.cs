@@ -2,7 +2,6 @@
 // See the LICENSE file in the project root for more information.
 
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
 using Common;
 using JsonDiffPatchDotNet;
@@ -55,7 +54,6 @@ namespace Lykke.Snow.AuditService.DomainServices.Services
             return jsonDiff;
         }
 
-        //TODO: write tests to test value equality
         public IEnumerable<IAuditModel<AuditDataType>> FilterBasedOnJsonDiff(IList<IAuditModel<AuditDataType>> auditEvents, IEnumerable<JsonDiffFilter> jsonDiffFilters)
         {
             var hashset = jsonDiffFilters.Select(x => x.PropertyName).ToHashSet();
@@ -103,6 +101,8 @@ namespace Lykke.Snow.AuditService.DomainServices.Services
                     return true;
                 
                 string? propValue = string.Empty;
+                
+                var x = prop.Value.Count();
 
                 // Value initialization - there's no old value
                 if(prop.Value.Count() == 1)
@@ -111,7 +111,7 @@ namespace Lykke.Snow.AuditService.DomainServices.Services
                 else if(prop.Value.Count() == 2)
                     propValue = prop.Value[1]?.Value<string>();
 
-                // Values are equal, add to the result collection
+                // Values are equal, add  result collection
                 if(filter.Value.ToString() == propValue)
                     return true;
             }
