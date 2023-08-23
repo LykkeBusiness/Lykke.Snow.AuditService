@@ -2,6 +2,7 @@
 // See the LICENSE file in the project root for more information.
 
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using Common;
 using JsonDiffPatchDotNet;
@@ -54,6 +55,7 @@ namespace Lykke.Snow.AuditService.DomainServices.Services
             return jsonDiff;
         }
 
+        //TODO: write tests to test value equality
         public IEnumerable<IAuditModel<AuditDataType>> FilterBasedOnJsonDiff(IList<IAuditModel<AuditDataType>> auditEvents, IEnumerable<JsonDiffFilter> jsonDiffFilters)
         {
             var hashset = jsonDiffFilters.Select(x => x.PropertyName).ToHashSet();
@@ -78,9 +80,43 @@ namespace Lykke.Snow.AuditService.DomainServices.Services
 
                 var properties = jobject.Properties();
                 
-                if(properties.Any(x => hashset.Contains(x.Name)))
+                if(!properties.Any(x => hashset.Contains(x.Name)))
+                    continue;
+
+                if(CheckJsonProperties(properties, jsonDiffFilters))
                     yield return auditEvent;
             }
+        }
+        
+        public bool CheckJsonProperties(IEnumerable<JProperty> properties, IEnumerable<JsonDiffFilter> jsonDiffFilters)
+        {
+            foreach(var prop in properties)
+            {
+                var filter = jsonDiffFilters.FirstOrDefault(x => x.PropertyName == prop.Name);
+                
+                // There's no such filter, move on to the next property
+                if(filter == null)
+                    continue;
+                
+                // Filter does not care what value is, add to the result collection
+                if(filter.Value == null)
+                    return true;
+                
+                string? propValue = string.Empty;
+
+                // Value initialization - there's no old value
+                if(prop.Value.Count() == 1)
+                    propValue = prop.Value[0]?.Value<string>();
+                // Value transition, pick up the new value
+                else if(prop.Value.Count() == 2)
+                    propValue = prop.Value[1]?.Value<string>();
+
+                // Values are equal, add to the result collection
+                if(filter.Value.ToString() == propValue)
+                    return true;
+            }
+
+            return false;
         }
     }
 }

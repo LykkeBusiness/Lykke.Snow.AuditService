@@ -12,9 +12,15 @@ namespace Lykke.Snow.AuditService.Domain.Model
     {
         public string PropertyName { get; }
         
-        public JsonDiffFilter(string propertyName)
+        /// <summary>
+        /// Can be null if calling code does not mind what new value was.
+        /// </summary>
+        public object? Value { get; }
+        
+        public JsonDiffFilter(string propertyName, object? value = null)
         {
             PropertyName = propertyName;
+            Value = value;
         }
     }
 }

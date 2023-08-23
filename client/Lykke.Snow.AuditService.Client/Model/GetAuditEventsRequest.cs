@@ -2,6 +2,7 @@
 // See the LICENSE file in the project root for more information.
 
 using System;
+using System.Collections.Generic;
 using Lykke.Snow.Audit;
 
 namespace Lykke.Snow.AuditService.Client.Model
@@ -9,7 +10,7 @@ namespace Lykke.Snow.AuditService.Client.Model
     /// <summary>
     /// Request class for listing audit events.
     /// </summary>
-    public class GetAuditEventsRequest<TActionTypeDetails> where TActionTypeDetails: struct
+    public class GetAuditEventsRequest
     {
         /// <summary>
         /// Starting point in time for the audit events
@@ -22,6 +23,11 @@ namespace Lykke.Snow.AuditService.Client.Model
         public DateTime? EndDateTime { get; set; }
 
         /// <summary>
+        /// Username of the Audit event
+        /// </summary>
+        public string? UserName { get; set; }
+
+        /// <summary>
         /// CorrelationId of the Audit event
         /// </summary>
         public string? CorrelationId { get; set; }
@@ -29,12 +35,7 @@ namespace Lykke.Snow.AuditService.Client.Model
         /// <summary>
         /// Reference of the Audit event (DataReference)
         /// </summary>
-        public string? ReferenceID { get; set; }
-
-        /// <summary>
-        /// Username of the Audit event
-        /// </summary>
-        public string? UserName { get; set; }
+        public string? ReferenceId { get; set; }
 
         /// <summary>
         /// Action type for the audit events
@@ -42,8 +43,9 @@ namespace Lykke.Snow.AuditService.Client.Model
         public AuditEventType? ActionType { get; set; }
 
         /// <summary>
-        /// Action type details
+        /// 
         /// </summary>
-        public TActionTypeDetails? AuditEventTypeDetails { get; set; }
+        //public DomainFiltersContract DomainFilters { get; set; } = new DomainFiltersContract();
+        public IDictionary<AuditDataTypeContract, List<JsonDiffFilterContract>>? DomainFilters { get; set; } = new Dictionary<AuditDataTypeContract, List<JsonDiffFilterContract>>();
     }
 }

@@ -486,6 +486,36 @@ namespace Lykke.Snow.AuditService.Tests
             Assert.Collection(actual, 
                 (item) => Assert.Equal(item, auditEvent4));
         }
+
+        [Fact]
+        public void FilterBasedOnJsonDiff_ShouldWorkAsExpected_WhenFilterValueIsAString()
+        {
+        }
+        
+        [Fact]
+        public void FilterBasedOnJsonDiff_ShouldWorkAsExpected_WhenFilterValueIsAnInteger()
+        {
+        }
+        
+        [Fact]
+        public void CheckJsonProperties_ShouldReturnTrue_OnlyWithPropertyName()
+        {
+        }
+        
+        [Fact]
+        public void CheckJsonProperties_ShouldReturnTrue_WhenValueIsPassed()
+        {
+        }
+
+        [Fact]
+        public void CheckJsonProperties_ShouldReturnTrue_ForDiffsWithOneValue()
+        {
+        }
+
+        [Fact]
+        public void CheckJsonProperties_ShouldReturnTrue_ForDiffsWithTwoValue()
+        {
+        }
         
         [Fact]
         public void FilterBasedOnJsonDiff_ShouldThrowJsonReaderException_WhenInvalidJsonPassed()
