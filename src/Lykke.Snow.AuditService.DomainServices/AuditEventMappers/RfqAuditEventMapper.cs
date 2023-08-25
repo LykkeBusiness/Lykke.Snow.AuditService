@@ -9,6 +9,7 @@ using Lykke.Snow.AuditService.Domain.Model;
 using Lykke.Snow.AuditService.Domain.Services;
 using MarginTrading.Backend.Contracts.Events;
 using MarginTrading.Backend.Contracts.Rfq;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace Lykke.Snow.AuditService.DomainServices.AuditEventMappers
@@ -39,25 +40,32 @@ namespace Lykke.Snow.AuditService.DomainServices.AuditEventMappers
 
         public AuditEventType GetAuditEventType(RfqEvent evt, string diffWithPreviousState)
         {
-            if(evt.EventType == RfqEventTypeContract.New)
+            if (evt.EventType == RfqEventTypeContract.New)
                 return AuditEventType.Creation;
-            
-            var diffObject = JObject.Parse(diffWithPreviousState);
-            
-            var jsonDiffFilters = new List<JsonDiffFilter>
-            {
-                new JsonDiffFilter("State")
-            };
 
-            // State has changed
-            if(_objectDiffService.CheckJsonProperties(diffObject.Properties(), jsonDiffFilters))
+            try
             {
-                return AuditEventType.StatusChanged;
+                var diffObject = JObject.Parse(diffWithPreviousState);
+
+                var jsonDiffFilters = new List<JsonDiffFilter>
+                {
+                    new JsonDiffFilter("State")
+                };
+
+                // State has changed
+                if (_objectDiffService.CheckJsonProperties(diffObject.Properties(), jsonDiffFilters))
+                {
+                    return AuditEventType.StatusChanged;
+                }
+
+                return AuditEventType.Edition;
             }
-            
-            return AuditEventType.Edition;
+            catch (JsonReaderException)
+            {
+                // Invalid json
+                return AuditEventType.Edition;
+            }
         }
-
         public AuditModel<AuditDataType> MapAuditEvent(RfqEvent rfqEvent, string diffWithPreviousState)
         {
             var username = GetEventUsername(rfqEvent);
