@@ -82,12 +82,14 @@ namespace Lykke.Snow.AuditService.Tests
            var mockAuditObjectStateFactory = new Mock<IAuditObjectStateFactory>();
            mockAuditObjectStateFactory.Setup(x => x.Create(It.IsAny<AuditDataType>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<DateTime>()))
                 .Returns(new AuditObjectState(AuditDataType.Rfq, "data-reference-1", "{}", oldTimestamp));
+
+           // Its  not important what diff is
+           //var mockObjectDiffService = new Mock<IObjectDiffService>();
+           //mockObjectDiffService.Setup(x => x.GetJsonDiff(It.IsAny<string>(), It.IsAny<string>())).Returns(@"{""State"": ""[""Initiated"", ""Started""]""}");
            
-           var sut = CreateSut(auditObjectStateRepositoryArg: mockAuditObjectStateRepository.Object, auditObjectStateFactoryArg: mockAuditObjectStateFactory.Object);
+           var sut = CreateSut(auditObjectStateRepositoryArg: mockAuditObjectStateRepository.Object, auditObjectStateFactoryArg: mockAuditObjectStateFactory.Object, objectDiffServiceArg: new ObjectDiffService(new Mock<ILogger<ObjectDiffService>>().Object));
            
-           var mockObjectDiffService = new Mock<IObjectDiffService>();
-           
-           await sut.ProcessEvent(rfqEvent, new RfqAuditEventMapper(mockObjectDiffService.Object));
+           await sut.ProcessEvent(rfqEvent, new RfqAuditEventMapper(new ObjectDiffService(new Mock<ILogger<ObjectDiffService>>().Object)));
 
            // Verify that the AddOrUpdate() method has not been called
            mockAuditObjectStateRepository.Verify(x => x.AddOrUpdate(It.IsAny<AuditObjectState>()), Times.Never);
