@@ -55,6 +55,45 @@ namespace Lykke.Snow.AuditService.Tests
        }
 
        [Fact]
+       public async void ProcessEvent_ObjectStateShouldNotBeUpdated_IfEventTimestampIsOlder()
+       {
+           var newTimestamp = DateTime.UtcNow;
+           var oldTimestamp = DateTime.UtcNow.AddSeconds(-30);
+           
+           var rfqEvent = new RfqEvent
+           {
+               BrokerId = "Spain",
+               EventType = RfqEventTypeContract.Update,
+               RfqSnapshot = new RfqContract 
+               {
+                   LastModified = oldTimestamp,
+                   CausationOperationId = "operation-id-1",
+                   State = RfqOperationState.Initiated,
+                   Id = "id-1"
+               }
+           };
+
+           // Setup the AuditObjectStateRepository so that it will return existing object with newer timestamp
+           var mockAuditObjectStateRepository = new Mock<IAuditObjectStateRepository>();
+           mockAuditObjectStateRepository.Setup(x => x.GetByDataReferenceAsync(It.IsAny<AuditDataType>(), It.IsAny<string>()))
+            .ReturnsAsync(new AuditObjectState(AuditDataType.Rfq, "data-reference-1", "{}", newTimestamp));
+           
+           // Setup the AuditObjectStateFactory so that it will return new object with older timestamp
+           var mockAuditObjectStateFactory = new Mock<IAuditObjectStateFactory>();
+           mockAuditObjectStateFactory.Setup(x => x.Create(It.IsAny<AuditDataType>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<DateTime>()))
+                .Returns(new AuditObjectState(AuditDataType.Rfq, "data-reference-1", "{}", oldTimestamp));
+           
+           var sut = CreateSut(auditObjectStateRepositoryArg: mockAuditObjectStateRepository.Object, auditObjectStateFactoryArg: mockAuditObjectStateFactory.Object);
+           
+           var mockObjectDiffService = new Mock<IObjectDiffService>();
+           
+           await sut.ProcessEvent(rfqEvent, new RfqAuditEventMapper(mockObjectDiffService.Object));
+
+           // Verify that the AddOrUpdate() method has not been called
+           mockAuditObjectStateRepository.Verify(x => x.AddOrUpdate(It.IsAny<AuditObjectState>()), Times.Never);
+       }
+
+       [Fact]
        public void GetRfqJsonDiff_Creation_VerifyExpectedMethodCalls()
        {
            var mockObjectDiffService = new Mock<IObjectDiffService>();
