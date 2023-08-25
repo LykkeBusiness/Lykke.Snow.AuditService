@@ -32,6 +32,13 @@ namespace Lykke.Snow.AuditService.Domain.Services
         /// <param name="evt"></param>
         /// <returns></returns>
         string GetStateInJson(T evt);
+
+        /// <summary>
+        /// Returns the 'auditEventType' of the entity based on the properties that has been changed.
+        /// </summary>
+        /// <param name="evt"></param>
+        /// <returns></returns>
+        AuditEventType GetAuditEventType(T evt, string diffWithPreviousState);
         
         /// <summary>
         /// Method that maps event into AuditModel. The diff caused by the event must be passed.
