@@ -7,7 +7,7 @@
     <Company>Lykke Business</Company>
     <Product>Lykke.Snow.AuditService</Product>
     <Description>Client for Lykke.Snow.AuditService API</Description>
-    <PackageLicenseUrl>https://github.com/LykkeBusiness/Lykke.Snow.AuditService/blob/master/LICENSE</PackageLicenseUrl>
+    <PackageId>Lykke.Snow.AuditService.Client</PackageId>
     <PackageProjectUrl>https://github.com/LykkeBusiness/Lykke.Snow.AuditService</PackageProjectUrl>
     <RepositoryUrl>https://github.com/LykkeBusinessPlatform/Lykke.Snow.AuditService.git</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
@@ -25,8 +25,11 @@
     <None Remove="Lykke.Snow.AuditService.Client.xml" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="LykkeBiz.HttpClientGenerator" Version="5.6.0" />
-    <PackageReference Include="LykkeBiz.SettingsReader" Version="7.1.0" />
+    <PackageReference Include="Lykke.Contracts" Version="2.0.3" />
+    <PackageReference Include="Lykke.MarginTrading.BackendSnow.Contracts" Version="1.53.0" />
+    <PackageReference Include="Lykke.Snow.Audit" Version="1.3.3" />
+    <PackageReference Include="LykkeBiz.HttpClientGenerator" Version="5.0.1" />
+    <PackageReference Include="LykkeBiz.SettingsReader" Version="6.0.4" />
     <PackageReference Include="Refit" Version="5.2.4" />
   </ItemGroup>
   <ItemGroup>

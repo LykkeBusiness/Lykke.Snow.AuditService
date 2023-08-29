@@ -4,12 +4,17 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Common;
 using Lykke.Snow.Audit;
 using Lykke.Snow.AuditService.Domain.Enum;
+using Lykke.Snow.AuditService.Domain.Model;
+using Lykke.Snow.AuditService.Domain.Services;
 using Lykke.Snow.AuditService.DomainServices.AuditEventMappers;
 using MarginTrading.Backend.Contracts.Events;
 using MarginTrading.Backend.Contracts.Rfq;
+using Moq;
+using Newtonsoft.Json.Linq;
 using Xunit;
 
 namespace Lykke.Snow.AuditService.Tests
@@ -51,7 +56,77 @@ namespace Lykke.Snow.AuditService.Tests
          
          Assert.Equal(id, actual);
       }
+      
+      // Make sure type is = 'Creation' without need of checking json diff when 
+      // New rfqEvent is passed
+      [Fact]
+      public void GetAuditEventType_ShouldReturn_TheCorrectEventTypeBasedOnJsonDiff_1()
+      {
+          var rfqEvent = new RfqEvent 
+          {
+              EventType = RfqEventTypeContract.New
+          };
+          
+          var objectDiffServiceMock = new Mock<IObjectDiffService>();
+          
+          var sut = CreateSut(objectDiffServiceArg: objectDiffServiceMock.Object);
+          
+          var actual = sut.GetAuditEventType(rfqEvent, @"{""State"": [""Initiated"", ""Started""]}");
 
+        
+          Assert.Equal(AuditEventType.Creation, actual);
+          
+          objectDiffServiceMock.Verify(x => x.CheckJsonProperties(It.IsAny<IEnumerable<JProperty>>(), It.IsAny<IEnumerable<JsonDiffFilter>>()), 
+            Times.Never);
+      }
+
+      // Make sure type is = 'StatusChanged' when State has changed with RfqEvent
+      [Fact]
+      public void GetAuditEventType_ShouldReturn_TheCorrectEventTypeBasedOnJsonDiff_2()
+      {
+          var rfqEvent = new RfqEvent 
+          {
+              EventType = RfqEventTypeContract.Update
+          };
+          
+          var objectDiffServiceMock = new Mock<IObjectDiffService>();
+          objectDiffServiceMock.Setup(x => x.CheckJsonProperties(It.IsAny<IEnumerable<JProperty>>(), 
+            It.Is<IEnumerable<JsonDiffFilter>>(filters => filters.Count(x => x.PropertyName == "State") > 0)))
+            .Returns(true);
+          
+          var sut = CreateSut(objectDiffServiceArg: objectDiffServiceMock.Object);
+          
+          var actual = sut.GetAuditEventType(rfqEvent, @"{""State"": [""Initiated"", ""Started""], ""LastModified"": [""2023-08-25T13:00:00"", ""2023-08-25T14:00:00""]}");
+
+          Assert.Equal(AuditEventType.StatusChanged, actual);
+          
+          objectDiffServiceMock.Verify(x => x.CheckJsonProperties(It.IsAny<IEnumerable<JProperty>>(), It.IsAny<IEnumerable<JsonDiffFilter>>()), 
+            Times.Once);
+      }
+
+      // Make sure type is = 'Edition' when State has not changed
+      [Fact]
+      public void GetAuditEventType_ShouldReturn_TheCorrectEventTypeBasedOnJsonDiff_3()
+      {
+          var rfqEvent = new RfqEvent 
+          {
+              EventType = RfqEventTypeContract.Update
+          };
+          
+          var objectDiffServiceMock = new Mock<IObjectDiffService>();
+          objectDiffServiceMock.Setup(x => x.CheckJsonProperties(It.IsAny<IEnumerable<JProperty>>(), 
+            It.Is<IEnumerable<JsonDiffFilter>>(filters => filters.Count(x => x.PropertyName == "State") > 0)))
+            .Returns(false);
+          
+          var sut = CreateSut(objectDiffServiceArg: objectDiffServiceMock.Object);
+          
+          var actual = sut.GetAuditEventType(rfqEvent, @"{""AccountId"": [""account-1"", ""account-2""]}");
+
+          Assert.Equal(AuditEventType.Edition, actual);
+          
+          objectDiffServiceMock.Verify(x => x.CheckJsonProperties(It.IsAny<IEnumerable<JProperty>>(), It.IsAny<IEnumerable<JsonDiffFilter>>()), 
+            Times.Once);
+      }
       [Fact]
       public void GetAuditEvent_ShouldMapFields_AndGenerateAuditModel()
       {
@@ -132,9 +207,16 @@ namespace Lykke.Snow.AuditService.Tests
       }
       
       
-      private RfqAuditEventMapper CreateSut()
+      private RfqAuditEventMapper CreateSut(IObjectDiffService? objectDiffServiceArg = null)
       {
-         return new RfqAuditEventMapper();
+          IObjectDiffService objectDiffService = new Mock<IObjectDiffService>().Object;
+          
+          if(objectDiffServiceArg != null)
+          {
+              objectDiffService = objectDiffServiceArg;
+          }
+
+          return new RfqAuditEventMapper(objectDiffService);
       }
    }
 }

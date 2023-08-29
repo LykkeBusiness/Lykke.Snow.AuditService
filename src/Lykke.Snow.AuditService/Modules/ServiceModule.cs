@@ -38,6 +38,10 @@ namespace Lykke.Snow.AuditService.Modules
                 .As<IObjectDiffService>()
                 .SingleInstance();
 
+            builder.RegisterType<AuditEventService>()
+                .As<IAuditEventService>()
+                .SingleInstance();
+
             builder.RegisterType<AuditObjectStateFactory>()
                 .As<IAuditObjectStateFactory>()
                 .SingleInstance();

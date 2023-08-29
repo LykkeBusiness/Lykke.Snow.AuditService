@@ -34,7 +34,7 @@ namespace Lykke.Snow.AuditService.Tests
     }
     public class RfqEventSubscriberTests
     {
-        private readonly IAuditEventMapper<RfqEvent> _rfqAuditEventMapper = new RfqAuditEventMapper();
+        private readonly IAuditEventMapper<RfqEvent> _rfqAuditEventMapper = new RfqAuditEventMapper(new Mock<IObjectDiffService>().Object);
 
         [Theory]
         [ClassData(typeof(RfqEventTestData))]
