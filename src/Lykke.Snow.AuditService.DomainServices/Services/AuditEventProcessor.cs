@@ -39,7 +39,7 @@ namespace Lykke.Snow.AuditService.DomainServices.Services
             var oldState = await _auditObjectStateRepository.GetByDataReferenceAsync(auditDataType, dataReference);
             var newState = eventMapper.GetStateInJson(evt);
 
-            var diff = GetJsonDiff(oldState == null ? string.Empty : oldState.StateInJson, newState);
+            var diff = GetJsonDiff(oldState == null ? "{}" : oldState.StateInJson, newState);
 
             var auditModel =  eventMapper.MapAuditEvent(evt, diff);
 
