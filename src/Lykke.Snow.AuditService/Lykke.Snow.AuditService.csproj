@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+<Project Sdk="Microsoft.NET.Sdk.Web">
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
     <LangVersion>8.0</LangVersion>
@@ -27,7 +27,7 @@
     <PackageReference Include="LykkeBiz.SettingsReader" Version="6.0.4" />
     <PackageReference Include="LykkeBiz.Logs.Serilog" Version="3.3.1" />
     <PackageReference Include="LykkeBiz.RabbitMqBroker" Version="11.3.0" />
-    <PackageReference Include="Lykke.Snow.Common.Startup" Version="3.6.0" />
+    <PackageReference Include="Lykke.Snow.Common.Startup" Version="3.10.1" />
     <PackageReference Include="Serilog.AspNetCore" Version="6.1.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.3.2" />
     <PackageReference Include="Swashbuckle.AspNetCore.Newtonsoft" Version="6.3.2" />
