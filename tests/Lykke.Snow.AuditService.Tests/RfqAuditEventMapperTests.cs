@@ -131,7 +131,6 @@ namespace Lykke.Snow.AuditService.Tests
       public void GetAuditEvent_ShouldMapFields_AndGenerateAuditModel()
       {
           var now = DateTime.UtcNow;
-          var operationId = "op-id-1";
           var id = "id-1";
           var username = "username-1";
           var jsonDiff = "json-diff-1";
@@ -145,7 +144,6 @@ namespace Lykke.Snow.AuditService.Tests
                   CreatedBy = username,
                   OriginatorType = RfqOriginatorType.Investor,
                   LastModified = now,
-                  CausationOperationId = operationId,
                   State = RfqOperationState.Initiated,
                   Id = id
               }
@@ -156,7 +154,6 @@ namespace Lykke.Snow.AuditService.Tests
           var actual = sut.MapAuditEvent(rfqEvent, jsonDiff);
           
           Assert.Equal(now, actual.Timestamp);
-          Assert.Equal(operationId, actual.CorrelationId);
           Assert.Equal(username, actual.UserName);
           Assert.Equal(AuditEventType.Creation, actual.Type);
           Assert.Equal(RfqOperationState.Initiated.ToString(), actual.AuditEventTypeDetails);
@@ -216,7 +213,7 @@ namespace Lykke.Snow.AuditService.Tests
               objectDiffService = objectDiffServiceArg;
           }
 
-          return new RfqAuditEventMapper(objectDiffService);
+          return new RfqAuditEventMapper(objectDiffService, new Common.Correlation.CorrelationContextAccessor());
       }
    }
 }

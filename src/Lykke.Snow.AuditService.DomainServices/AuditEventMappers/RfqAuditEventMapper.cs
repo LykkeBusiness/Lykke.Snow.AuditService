@@ -7,6 +7,8 @@ using Lykke.Snow.Audit;
 using Lykke.Snow.AuditService.Domain.Enum;
 using Lykke.Snow.AuditService.Domain.Model;
 using Lykke.Snow.AuditService.Domain.Services;
+using Lykke.Snow.Common.Correlation;
+
 using MarginTrading.Backend.Contracts.Events;
 using MarginTrading.Backend.Contracts.Rfq;
 using Newtonsoft.Json;
@@ -17,10 +19,13 @@ namespace Lykke.Snow.AuditService.DomainServices.AuditEventMappers
     public class RfqAuditEventMapper : IAuditEventMapper<RfqEvent>
     {
         private readonly IObjectDiffService _objectDiffService;
+        private readonly CorrelationContextAccessor _correlationContextAccessor;
 
-        public RfqAuditEventMapper(IObjectDiffService objectDiffService)
+        public RfqAuditEventMapper(IObjectDiffService objectDiffService, CorrelationContextAccessor correlationContextAccessor)
         {
             _objectDiffService = objectDiffService;
+            _correlationContextAccessor = correlationContextAccessor;
+
         }
 
         public AuditDataType GetAuditDataType(RfqEvent evt)
@@ -74,7 +79,7 @@ namespace Lykke.Snow.AuditService.DomainServices.AuditEventMappers
             var auditEvent = new AuditModel<AuditDataType>()
             {
                 Timestamp = rfqEvent.RfqSnapshot.LastModified,
-                CorrelationId = rfqEvent.RfqSnapshot.CausationOperationId,
+                CorrelationId = _correlationContextAccessor.GetOrGenerateCorrelationId(),
                 UserName = username,
                 Type = GetAuditEventType(rfqEvent, diffWithPreviousState), 
                 AuditEventTypeDetails = rfqEvent.RfqSnapshot.State.ToString(),

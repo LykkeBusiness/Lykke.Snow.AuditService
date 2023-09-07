@@ -46,7 +46,7 @@ namespace Lykke.Snow.AuditService.Tests
            
            var sut = CreateSut(mockAuditEventRepository.Object, mockAuditObjectStateRepository.Object, mockObjectDiffService.Object, mockAuditObjectStateFactory.Object);
            
-           await sut.ProcessEvent(rfqEvent, new RfqAuditEventMapper(mockObjectDiffService.Object));
+           await sut.ProcessEvent(rfqEvent, new RfqAuditEventMapper(mockObjectDiffService.Object, new Common.Correlation.CorrelationContextAccessor()));
            
            mockAuditObjectStateRepository.Verify(x => x.GetByDataReferenceAsync(It.IsAny<AuditDataType>(), It.IsAny<string>()), Times.Once);
            mockAuditObjectStateFactory.Verify(x => x.Create(It.IsAny<AuditDataType>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<DateTime>()), Times.Once);
@@ -89,7 +89,7 @@ namespace Lykke.Snow.AuditService.Tests
            
            var sut = CreateSut(auditObjectStateRepositoryArg: mockAuditObjectStateRepository.Object, auditObjectStateFactoryArg: mockAuditObjectStateFactory.Object, objectDiffServiceArg: new ObjectDiffService(new Mock<ILogger<ObjectDiffService>>().Object));
            
-           await sut.ProcessEvent(rfqEvent, new RfqAuditEventMapper(new ObjectDiffService(new Mock<ILogger<ObjectDiffService>>().Object)));
+           await sut.ProcessEvent(rfqEvent, new RfqAuditEventMapper(new ObjectDiffService(new Mock<ILogger<ObjectDiffService>>().Object), new Common.Correlation.CorrelationContextAccessor()));
 
            // Verify that the AddOrUpdate() method has not been called
            mockAuditObjectStateRepository.Verify(x => x.AddOrUpdate(It.IsAny<AuditObjectState>()), Times.Never);
