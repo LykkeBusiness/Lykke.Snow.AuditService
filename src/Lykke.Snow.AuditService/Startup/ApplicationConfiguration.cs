@@ -2,6 +2,7 @@
 // See the LICENSE file in the project root for more information.
 
 using Lykke.Middlewares;
+using Lykke.Snow.Common.Correlation;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Hosting;
 
@@ -30,7 +31,9 @@ namespace Lykke.Snow.AuditService.Startup
 
              app.MapControllers();
 
-             return app;
+            app.UseCorrelation();
+
+            return app;
         }
     }
 }

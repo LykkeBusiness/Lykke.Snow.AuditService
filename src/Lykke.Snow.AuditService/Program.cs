@@ -3,6 +3,7 @@
 
 using System.Threading.Tasks;
 using Lykke.Snow.AuditService.Startup;
+using Lykke.Snow.Common.Correlation;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -19,9 +20,10 @@ namespace Lykke.Snow.AuditService
                 var builder = WebApplication.CreateBuilder(args);
                 var (configuration, settingsManager) = builder.BuildConfiguration();
 
-                builder.Services.RegisterInfrastructureServices(settingsManager);
+                var correlationContextAccessor = new CorrelationContextAccessor();
 
-                builder.ConfigureHost(configuration, settingsManager);
+                builder.Services.RegisterInfrastructureServices(settingsManager, correlationContextAccessor);
+                builder.ConfigureHost(configuration, settingsManager, correlationContextAccessor);
 
                 var app = builder.Build();
 
