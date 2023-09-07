@@ -5,6 +5,10 @@ using System;
 using Lykke.SettingsReader;
 using Lykke.Snow.AuditService.MappingProfiles;
 using Lykke.Snow.AuditService.Settings;
+using Lykke.Snow.Common.Correlation;
+using Lykke.Snow.Common.Correlation.Cqrs;
+using Lykke.Snow.Common.Correlation.Http;
+using Lykke.Snow.Common.Correlation.RabbitMq;
 using Lykke.Snow.Common.Startup;
 using Lykke.Snow.Common.Startup.ApiKey;
 using Microsoft.Extensions.DependencyInjection;
@@ -16,7 +20,9 @@ namespace Lykke.Snow.AuditService.Startup
 {
     public static class CompositionRoot
     {
-        public static IServiceCollection RegisterInfrastructureServices(this IServiceCollection services, IReloadingManager<AppSettings> settings)
+        public static IServiceCollection RegisterInfrastructureServices(this IServiceCollection services, 
+            IReloadingManager<AppSettings> settings,
+            CorrelationContextAccessor correlationContextAccessor)
         {
             if(settings.CurrentValue.AuditService == null)
                 throw new ArgumentException($"{nameof(AppSettings.AuditService)} settings is not configured!");
@@ -48,6 +54,11 @@ namespace Lykke.Snow.AuditService.Startup
                 .AddSwaggerGenNewtonsoftSupport();
 
             services.AddAutoMapper(typeof(MappingProfile).Assembly);
+
+            services.AddSingleton(correlationContextAccessor);
+            services.AddSingleton<RabbitMqCorrelationManager>();
+            services.AddSingleton<CqrsCorrelationManager>();
+            services.AddTransient<HttpCorrelationHandler>();
 
             return services;
         }

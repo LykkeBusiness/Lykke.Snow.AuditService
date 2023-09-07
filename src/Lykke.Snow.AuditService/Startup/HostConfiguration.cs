@@ -10,6 +10,8 @@ using Lykke.SettingsReader;
 using Lykke.Snow.AuditService.Extensions;
 using Lykke.Snow.AuditService.Modules;
 using Lykke.Snow.AuditService.Settings;
+using Lykke.Snow.Common.Correlation;
+using Lykke.Snow.Common.Correlation.Serilog;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
@@ -19,7 +21,10 @@ namespace Lykke.Snow.AuditService.Startup
 {
     public static class HostConfiguration
     {
-        public static IHostBuilder ConfigureHost(this WebApplicationBuilder builder, IConfiguration configuration, IReloadingManager<AppSettings> settings)
+        public static IHostBuilder ConfigureHost(this WebApplicationBuilder builder, 
+            IConfiguration configuration, 
+            IReloadingManager<AppSettings> settings,
+            CorrelationContextAccessor correlationContextAccessor)
         {
             if(settings.CurrentValue.AuditService == null)
                 throw new ArgumentException($"{nameof(AppSettings.AuditService)} settings is not configured!");
@@ -51,7 +56,8 @@ namespace Lykke.Snow.AuditService.Startup
                     cfg.ReadFrom.Configuration(configuration)
                         .Enrich.WithProperty("Application", title)
                         .Enrich.WithProperty("Version", version)
-                        .Enrich.WithProperty("Environment", environmentName ?? "Development");
+                        .Enrich.WithProperty("Environment", environmentName ?? "Development")
+                        .Enrich.With(new CorrelationLogEventEnricher("CorrelationId", correlationContextAccessor));
                     
                      Log.Information($"{title} [{version}] {copyright}");
                      Log.Information($"Running on: {RuntimeInformation.OSDescription}");

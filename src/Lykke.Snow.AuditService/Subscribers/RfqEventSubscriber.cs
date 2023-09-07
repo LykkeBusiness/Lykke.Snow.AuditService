@@ -8,6 +8,7 @@ using Lykke.RabbitMqBroker.Subscriber.Deserializers;
 using Lykke.RabbitMqBroker.Subscriber.MessageReadStrategies;
 using Lykke.Snow.AuditService.Domain.Services;
 using Lykke.Snow.AuditService.Settings;
+using Lykke.Snow.Common.Correlation.RabbitMq;
 using MarginTrading.Backend.Contracts.Events;
 using Microsoft.Extensions.Logging;
 
@@ -21,19 +22,21 @@ namespace Lykke.Snow.AuditService.Subscribers
         private readonly ILogger<RfqEventSubscriber> _logger;
         private readonly IAuditEventProcessor _auditEventProcessor;
         private readonly IAuditEventMapper<RfqEvent> _rfqAuditEventMapper;
+        private readonly RabbitMqCorrelationManager _rabbitMqCorrelationManager;
 
         public RfqEventSubscriber(IAuditEventProcessor auditEventProcessor,
             ILoggerFactory loggerFactory,
             SubscriptionSettings settings,
             ILogger<RfqEventSubscriber> logger,
-            IAuditEventMapper<RfqEvent> rfqAuditEventMapper)
+            IAuditEventMapper<RfqEvent> rfqAuditEventMapper,
+            RabbitMqCorrelationManager rabbitMqCorrelationManager)
         {
             _auditEventProcessor = auditEventProcessor;
             _loggerFactory = loggerFactory;
             _settings = settings;
             _logger = logger;
             _rfqAuditEventMapper = rfqAuditEventMapper;
-
+            _rabbitMqCorrelationManager = rabbitMqCorrelationManager;
         }
 
         public void Dispose()
@@ -48,6 +51,7 @@ namespace Lykke.Snow.AuditService.Subscribers
                   _settings)
                   .SetMessageDeserializer(new JsonMessageDeserializer<RfqEvent>())
                   .SetMessageReadStrategy(new MessageReadWithTemporaryQueueStrategy())
+                  .SetReadHeadersAction(_rabbitMqCorrelationManager.FetchCorrelationIfExists)
                   .Subscribe(ProcessMessageAsync)
                   .Start();
         }
