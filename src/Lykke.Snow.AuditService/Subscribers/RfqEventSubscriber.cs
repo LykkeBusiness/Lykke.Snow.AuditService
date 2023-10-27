@@ -1,6 +1,7 @@
 // Copyright (c) 2023 Lykke Corp.
 // See the LICENSE file in the project root for more information.
 
+using System;
 using System.Threading.Tasks;
 using Lykke.RabbitMqBroker;
 using Lykke.RabbitMqBroker.Subscriber;
@@ -18,6 +19,7 @@ namespace Lykke.Snow.AuditService.Subscribers
         private RabbitMqPullingSubscriber<RfqEvent>? _subscriber;
         private readonly ILoggerFactory _loggerFactory;
         private readonly RabbitMqSubscriptionSettings _settings;
+        private readonly string _brokerId;
         private readonly ILogger<RfqEventSubscriber> _logger;
         private readonly IAuditEventProcessor _auditEventProcessor;
         private readonly IAuditEventMapper<RfqEvent> _rfqAuditEventMapper;
@@ -25,12 +27,19 @@ namespace Lykke.Snow.AuditService.Subscribers
         public RfqEventSubscriber(IAuditEventProcessor auditEventProcessor,
             ILoggerFactory loggerFactory,
             SubscriptionSettings settings,
+            string brokerId,
             ILogger<RfqEventSubscriber> logger,
             IAuditEventMapper<RfqEvent> rfqAuditEventMapper)
         {
+            if (string.IsNullOrEmpty(brokerId))
+            {
+                throw new ArgumentException("BrokerId must be configured");
+            }
+            
             _auditEventProcessor = auditEventProcessor;
             _loggerFactory = loggerFactory;
             _settings = settings;
+            _brokerId = brokerId;
             _logger = logger;
             _rfqAuditEventMapper = rfqAuditEventMapper;
 
@@ -54,6 +63,11 @@ namespace Lykke.Snow.AuditService.Subscribers
         
         public Task ProcessMessageAsync(RfqEvent e)
         {
+            if(!string.Equals(e.BrokerId, _brokerId, StringComparison.OrdinalIgnoreCase))
+            {
+                return Task.CompletedTask;
+            }
+
             _logger.LogDebug("Incoming RfqEvent {@e}", e);
 
             return _auditEventProcessor.ProcessEvent(e, _rfqAuditEventMapper);
