@@ -8,6 +8,7 @@ using Lykke.Snow.AuditService.Domain.Services;
 using Lykke.Snow.AuditService.DomainServices.AuditEventMappers;
 using Lykke.Snow.AuditService.Settings;
 using Lykke.Snow.AuditService.Subscribers;
+using Lykke.Snow.Common.Correlation;
 using Lykke.Snow.Common.Correlation.RabbitMq;
 
 using MarginTrading.Backend.Contracts.Events;
@@ -64,7 +65,8 @@ namespace Lykke.Snow.AuditService.Tests
                 auditEventProcessor = auditEventProcessorArg;
             }
             
-            return new RfqEventSubscriber(auditEventProcessor, mockLoggerFactory.Object, subscriptionSettings, "consors", mockLogger.Object, _rfqAuditEventMapper);
+            return new RfqEventSubscriber(auditEventProcessor, mockLoggerFactory.Object, subscriptionSettings, "consors", mockLogger.Object, _rfqAuditEventMapper,
+                new RabbitMqCorrelationManager(new CorrelationContextAccessor()));
         }
     }
 }
