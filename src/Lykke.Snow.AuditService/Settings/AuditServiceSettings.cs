@@ -15,5 +15,7 @@ namespace Lykke.Snow.AuditService.Settings
         public ClientSettings? AuditServiceClient { get; set; }
         public SubscribersSettings Subscribers { get; set; } = new SubscribersSettings();
         public CsvExportSettings CsvExportSettings { get; set; } = new CsvExportSettings();
+
+        public string BrokerId { get; set; } = string.Empty;
     }
 }

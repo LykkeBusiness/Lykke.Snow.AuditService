@@ -25,6 +25,7 @@ namespace Lykke.Snow.AuditService.Modules
 
             builder.RegisterType<RfqEventSubscriber>()
                 .WithParameter(TypedParameter.From(_auditServiceSettings.Subscribers.RfqEventSubscriber))
+                .WithParameter(TypedParameter.From(_auditServiceSettings.BrokerId))
                 .As<IStartStop>()
                 .SingleInstance();
         }
