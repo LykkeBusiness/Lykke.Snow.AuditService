@@ -24,7 +24,7 @@ namespace Lykke.Snow.AuditService.Tests
                 new RfqEvent
                 {
                     EventType = RfqEventTypeContract.New,
-                    BrokerId = "Spain",
+                    BrokerId = "Consors",
                     RfqSnapshot = new MarginTrading.Backend.Contracts.Rfq.RfqContract()
                 }
             };
@@ -62,7 +62,7 @@ namespace Lykke.Snow.AuditService.Tests
                 auditEventProcessor = auditEventProcessorArg;
             }
             
-            return new RfqEventSubscriber(auditEventProcessor, mockLoggerFactory.Object, subscriptionSettings, mockLogger.Object, _rfqAuditEventMapper);
+            return new RfqEventSubscriber(auditEventProcessor, mockLoggerFactory.Object, subscriptionSettings, "consors", mockLogger.Object, _rfqAuditEventMapper);
         }
     }
 }
