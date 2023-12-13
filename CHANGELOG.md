@@ -1,3 +1,16 @@
+## 1.1.0 - Nova 2. Delivery 38 (December 13, 2023)
+### What's changed
+* LT-5057: Filter rfq events by broker id.
+
+### Deployment
+* Add `BrokerId` key to configuration. Example:
+  ```json
+  {
+    "BrokerId": "BBVA",
+    ...
+  }
+  ```
+
 ## 1.0.0 - Nova 2. Delivery 36 (2023-08-31)
 ### What's changed
 * LT-4944: Create audit trail api.
