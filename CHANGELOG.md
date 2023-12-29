@@ -1,4 +1,4 @@
-## 1.1.0 - Nova 2. Delivery 38 (December 13, 2023)
+## 1.1.0 - Nova 2. Delivery 38 (2023-12-13)
 ### What's changed
 * LT-5057: Filter rfq events by broker id.
 
