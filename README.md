@@ -2,7 +2,7 @@
 This service is responsible for storing &amp; serving audit events.
 
 ## How to use in prod environment?
-// To be filled.
+The compoment has to be deployed on **per broker** basis.
 
 ## How to run for debug?
 
@@ -50,9 +50,9 @@ Settings schema is.
             "RfqEventSubscriber": {
               "ConnectionString": "",
               "QueueName": "",
-              "RoutingKey": "",
-              "ExchangeName": "",
-              "IsDurable": false
+              "RoutingKey": "RfqEvent",
+              "ExchangeName": "lykke.mt.rfq.changed",
+              "IsDurable": true
             }
         },
         "AuditServiceClient": {
@@ -62,6 +62,59 @@ Settings schema is.
         "CsvExportSettings": {
             "Delimiter": ",",
             "ShouldOutputHeader": true
+        },
+        "BrokerId": ""
+    }
+}
+```
+
+## Logging Configuration
+
+The component uses Serilog for logging. The configuration is passed through `appsettings.Serilog.json` file.
+Here is an example:
+
+```json
+{
+    "serilog": {
+        "Using": [
+          "Serilog.Sinks.File",
+          "Serilog.Sinks.Async"
+        ],
+        "minimumLevel": {
+          "default": "Debug"
+        },
+        "writeTo": [
+          {
+            "Name": "Async",
+            "Args": {
+              "configure": [
+                {
+                  "Name": "Console",
+                  "Args": {
+                    "outputTemplate": "[{Timestamp:u}] [{Level:u3}] - [{Application}:{Version}:{Environment}] - {info} {Message:lj} {NewLine}{Exception}"
+                  }
+                },
+                {
+                  "Name": "File",
+                  "Args": {
+                    "outputTemplate": "[{Timestamp:u}] [{Level:u3}] - [{Application}:{Version}:{Environment}] - {info} {Message:lj} {NewLine}{Exception}",
+                    "path": "logs/snow/service.log",
+                    "rollingInterval": "Day"
+                  }
+                }
+              ]
+            }
+          }
+
+        ],
+        "Enrich": [
+          "FromLogContext",
+          "WithMachineName",
+          "WithThreadId",
+          "WithDemystifiedStackTraces"
+        ],
+        "Properties": {
+          "Application": "AuditService"
         }
     }
 }
