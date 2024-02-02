@@ -11,6 +11,6 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="JsonDiffPatch.Net" Version="2.3.0" />
-    <PackageReference Include="LykkeBiz.Common" Version="8.1.0" />
+    <PackageReference Include="LykkeBiz.Common" Version="8.1.2" />
   </ItemGroup>
 </Project>
