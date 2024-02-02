@@ -1,3 +1,5 @@
+[![.NET](https://github.com/LykkeBusiness/Lykke.Snow.AuditService/actions/workflows/build.yml/badge.svg)](https://github.com/LykkeBusiness/Lykke.Snow.AuditService/actions/workflows/build.yml)
+
 # Lykke.Snow.AuditService
 This service is responsible for storing &amp; serving audit events.
 
