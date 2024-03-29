@@ -1,3 +1,10 @@
+## 1.3.0 - Nova 2. Delivery 41 (March 29, 2024)
+### What's changed
+* LT-5441: Update packages.
+
+
+
+
 ## 1.2.0 - Nova 2. Delivery 39 (January 30, 2024)
 ### What's changed
 * LT-5149: Changelog.md for lykke.snow.auditservice.
