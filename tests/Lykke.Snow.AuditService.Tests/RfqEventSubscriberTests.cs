@@ -6,8 +6,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Lykke.Snow.AuditService.Domain.Services;
 using Lykke.Snow.AuditService.DomainServices.AuditEventMappers;
-using Lykke.Snow.AuditService.Settings;
-using Lykke.Snow.AuditService.Subscribers;
+using Lykke.Snow.AuditService.MessageHandlers;
 using MarginTrading.Backend.Contracts.Events;
 using Microsoft.Extensions.Logging;
 using Moq;
@@ -44,25 +43,17 @@ namespace Lykke.Snow.AuditService.Tests
             
             var sut = CreateSut(mockAuditEventProcessor.Object);
             
-            await sut.ProcessMessageAsync(evt);
+            await sut.Handle(evt);
             
             mockAuditEventProcessor.Verify(x => x.ProcessEvent(evt, _rfqAuditEventMapper), Times.Once);
         }
-        
-        private RfqEventSubscriber CreateSut(IAuditEventProcessor? auditEventProcessorArg = null)
+
+        private RfqEventHandler CreateSut(IAuditEventProcessor? auditEventProcessorArg = null)
         {
-            var mockLoggerFactory = new Mock<ILoggerFactory>();
-            var mockLogger = new Mock<ILogger<RfqEventSubscriber>>();
-            var subscriptionSettings = new SubscriptionSettings();
-            
-            IAuditEventProcessor auditEventProcessor = new Mock<IAuditEventProcessor>().Object;
-            
-            if(auditEventProcessorArg != null)
-            {
-                auditEventProcessor = auditEventProcessorArg;
-            }
-            
-            return new RfqEventSubscriber(auditEventProcessor, mockLoggerFactory.Object, subscriptionSettings, "consors", mockLogger.Object, _rfqAuditEventMapper);
+            var mockLogger = new Mock<ILogger<RfqEventHandler>>();
+            var auditEventProcessor = auditEventProcessorArg ?? new Mock<IAuditEventProcessor>().Object;
+
+            return new RfqEventHandler("brokerId", mockLogger.Object, auditEventProcessor, _rfqAuditEventMapper);
         }
     }
 }

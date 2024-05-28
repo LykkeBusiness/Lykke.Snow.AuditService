@@ -5,15 +5,26 @@ using Autofac;
 using Lykke.Middlewares.Mappers;
 using Lykke.Snow.AuditService.Domain.Services;
 using Lykke.Snow.AuditService.DomainServices.Services;
-using Lykke.Snow.AuditService.Startup;
+using Lykke.Snow.AuditService.Settings;
+using Lykke.Snow.Common.Startup.Extensions;
+
 using Microsoft.AspNetCore.Authentication;
 
 namespace Lykke.Snow.AuditService.Modules
 {
     internal class ServiceModule : Module
     {
+        private readonly AuditServiceSettings _auditServiceSettings;
+
+        public ServiceModule(AuditServiceSettings auditServiceSettings)
+        {
+            _auditServiceSettings = auditServiceSettings;
+        }
+
         protected override void Load(ContainerBuilder builder)
         {
+            builder.AddBrokerId(_auditServiceSettings.BrokerId);
+            
             builder.RegisterType<DefaultHttpStatusCodeMapper>()
                 .As<IHttpStatusCodeMapper>()
                 .SingleInstance();
@@ -26,10 +37,6 @@ namespace Lykke.Snow.AuditService.Modules
                 .As<ISystemClock>()
                 .SingleInstance();
             
-            builder.RegisterType<StartupManager>()
-                .AsSelf()
-                .SingleInstance();
-
             builder.RegisterType<AuditEventProcessor>()
                 .As<IAuditEventProcessor>()
                 .SingleInstance();
