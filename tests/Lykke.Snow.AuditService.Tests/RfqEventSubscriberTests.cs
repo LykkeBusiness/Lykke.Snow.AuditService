@@ -1,8 +1,6 @@
 // Copyright (c) 2023 Lykke Corp.
 // See the LICENSE file in the project root for more information.
 
-using System.Collections;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using Lykke.Snow.AuditService.Domain.Services;
 using Lykke.Snow.AuditService.DomainServices.AuditEventMappers;
@@ -14,23 +12,6 @@ using Xunit;
 
 namespace Lykke.Snow.AuditService.Tests
 {
-    class RfqEventTestData : IEnumerable<object[]>
-    {
-        public IEnumerator<object[]> GetEnumerator()
-        {
-            yield return new object[] 
-            {
-                new RfqEvent
-                {
-                    EventType = RfqEventTypeContract.New,
-                    BrokerId = "Consors",
-                    RfqSnapshot = new MarginTrading.Backend.Contracts.Rfq.RfqContract()
-                }
-            };
-        }
-
-        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
-    }
     public class RfqEventSubscriberTests
     {
         private readonly IAuditEventMapper<RfqEvent> _rfqAuditEventMapper = new RfqAuditEventMapper(new Mock<IObjectDiffService>().Object);
