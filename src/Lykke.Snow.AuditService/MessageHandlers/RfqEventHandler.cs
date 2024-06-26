@@ -36,7 +36,7 @@ namespace Lykke.Snow.AuditService.MessageHandlers
 
         public Task Handle(RfqEvent message)
         {
-            if (_brokerId == message.BrokerId)
+            if (_brokerId != message.BrokerId)
             {
                 return Task.CompletedTask;
             }
