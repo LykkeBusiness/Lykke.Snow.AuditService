@@ -10,6 +10,8 @@ namespace Lykke.Snow.AuditService.Tests
 {
     internal class RfqEventTestData : IEnumerable<object[]>
     {
+        public const string BrokerId = "Consors";
+        
         public IEnumerator<object[]> GetEnumerator()
         {
             yield return new object[] 
@@ -17,7 +19,7 @@ namespace Lykke.Snow.AuditService.Tests
                 new RfqEvent
                 {
                     EventType = RfqEventTypeContract.New,
-                    BrokerId = "Consors",
+                    BrokerId = BrokerId,
                     RfqSnapshot = new MarginTrading.Backend.Contracts.Rfq.RfqContract()
                 }
             };

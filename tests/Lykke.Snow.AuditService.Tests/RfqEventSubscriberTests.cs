@@ -34,7 +34,7 @@ namespace Lykke.Snow.AuditService.Tests
             var mockLogger = new Mock<ILogger<RfqEventHandler>>();
             var auditEventProcessor = auditEventProcessorArg ?? new Mock<IAuditEventProcessor>().Object;
 
-            return new RfqEventHandler("brokerId", mockLogger.Object, auditEventProcessor, _rfqAuditEventMapper);
+            return new RfqEventHandler(RfqEventTestData.BrokerId, mockLogger.Object, auditEventProcessor, _rfqAuditEventMapper);
         }
     }
 }
