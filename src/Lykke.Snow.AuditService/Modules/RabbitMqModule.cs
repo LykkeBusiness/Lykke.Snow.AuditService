@@ -4,30 +4,36 @@
 using System;
 using Autofac;
 using Lykke.RabbitMqBroker;
+using Lykke.RabbitMqBroker.Subscriber;
+using Lykke.Snow.AuditService.MessageHandlers;
 using Lykke.Snow.AuditService.Settings;
-using Lykke.Snow.AuditService.Subscribers;
+
+using MarginTrading.Backend.Contracts.Events;
 
 namespace Lykke.Snow.AuditService.Modules
 {
     public class RabbitMqModule : Module
     {
-        private readonly AuditServiceSettings _auditServiceSettings;
+        private readonly SubscriptionSettings _rfqEventSubscriberSettings;
 
         public RabbitMqModule(AuditServiceSettings auditServiceSettings)
         {
-            _auditServiceSettings = auditServiceSettings;
-        }
+            _rfqEventSubscriberSettings = 
+                auditServiceSettings.Subscribers.RfqEventSubscriber ?? 
+                throw new InvalidOperationException("RfqEventSubscriber settings are not configured");
+        }  
 
         protected override void Load(ContainerBuilder builder)
         {
-            if(_auditServiceSettings.Subscribers == null)
-                throw new ArgumentNullException(nameof(_auditServiceSettings.Subscribers));
-
-            builder.RegisterType<RfqEventSubscriber>()
-                .WithParameter(TypedParameter.From(_auditServiceSettings.Subscribers.RfqEventSubscriber))
-                .WithParameter(TypedParameter.From(_auditServiceSettings.BrokerId))
-                .As<IStartStop>()
-                .SingleInstance();
+            builder.AddRabbitMqConnectionProvider();
+            
+            builder.AddRabbitMqListener<RfqEvent, RfqEventHandler>(_rfqEventSubscriberSettings,
+                opt =>
+                {
+                    opt.SerializationFormat = SerializationFormat.Json;
+                    opt.ShareConnection = true;
+                    opt.SubscriptionTemplate = SubscriptionTemplate.NoLoss;
+                });
         }
     }
 }

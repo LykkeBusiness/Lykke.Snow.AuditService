@@ -25,9 +25,6 @@ namespace Lykke.Snow.AuditService
 
                 var app = builder.Build();
 
-                var startupManager = app.Services.GetRequiredService<StartupManager>();
-                startupManager.Start();
-
                 await app.Configure().RunAsync();
             });
         }
