@@ -35,7 +35,7 @@ namespace Lykke.Snow.AuditService.Startup
                 .ConfigureContainer<ContainerBuilder>((ctx, cBuilder) =>
                 {
                     // register Autofac modules here
-                    cBuilder.RegisterModule(new ServiceModule());
+                    cBuilder.RegisterModule(new ServiceModule(settings.CurrentValue.AuditService));
                     cBuilder.RegisterModule(new DalModule(settings.CurrentValue.AuditService));
                     cBuilder.RegisterModule(new RabbitMqModule(settings.CurrentValue.AuditService));
                     cBuilder.RegisterModule(new AuditEventMapperModule());
