@@ -15,7 +15,12 @@ namespace Lykke.Snow.AuditService.Startup
     {
         public static (IConfigurationRoot, IReloadingManager<AppSettings>) BuildConfiguration(this WebApplicationBuilder builder)
         {
-            builder.Environment.ContentRootPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            var assemblyFolder = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            if (assemblyFolder == null)
+            {
+                throw new DirectoryNotFoundException($"Assembly folder for {Assembly.GetExecutingAssembly().GetName().Name} is not found");
+            }
+            builder.Environment.ContentRootPath = assemblyFolder;
 
             var configuration = builder.Configuration
                 .AddSerilogJson(builder.Environment)
