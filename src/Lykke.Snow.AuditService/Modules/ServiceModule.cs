@@ -8,8 +8,6 @@ using Lykke.Snow.AuditService.DomainServices.Services;
 using Lykke.Snow.AuditService.Settings;
 using Lykke.Snow.Common.Startup.Extensions;
 
-using Microsoft.AspNetCore.Authentication;
-
 namespace Lykke.Snow.AuditService.Modules
 {
     internal class ServiceModule : Module
@@ -31,10 +29,6 @@ namespace Lykke.Snow.AuditService.Modules
 
             builder.RegisterType<DefaultLogLevelMapper>()
                 .As<ILogLevelMapper>()
-                .SingleInstance();
-
-            builder.RegisterType<SystemClock>()
-                .As<ISystemClock>()
                 .SingleInstance();
             
             builder.RegisterType<AuditEventProcessor>()
