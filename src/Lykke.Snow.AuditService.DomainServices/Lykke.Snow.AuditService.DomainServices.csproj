@@ -14,4 +14,7 @@
     <PackageReference Include="JsonDiffPatch.Net" />
     <PackageReference Include="LykkeBiz.Common" />
   </ItemGroup>
+    <PropertyGroup>
+        <NoWarn>$(NoWarn);NU1507</NoWarn>
+    </PropertyGroup>
 </Project>

@@ -22,4 +22,7 @@
     <ProjectReference Include="..\..\src\Lykke.Snow.AuditService\Lykke.Snow.AuditService.csproj" />
     <ProjectReference Include="..\..\src\Lykke.Snow.AuditService.DomainServices\Lykke.Snow.AuditService.DomainServices.csproj" />
   </ItemGroup>
+    <PropertyGroup>
+        <NoWarn>$(NoWarn);NU1507</NoWarn>
+    </PropertyGroup>
 </Project>
