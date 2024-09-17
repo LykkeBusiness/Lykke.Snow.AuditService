@@ -16,15 +16,6 @@
     <Nullable>enable</Nullable>
     <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <DocumentationFile>$(OutputPath)$(AssemblyName).xml</DocumentationFile>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <DocumentationFile>$(OutputPath)$(AssemblyName).xml</DocumentationFile>
-  </PropertyGroup>
-  <ItemGroup>
-    <None Remove="Lykke.Snow.AuditService.Client.xml" />
-  </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Lykke.Contracts" />
     <PackageReference Include="Lykke.MarginTrading.BackendSnow.Contracts" />
@@ -36,7 +27,7 @@
   <ItemGroup>
     <Folder Include="Models\" />
   </ItemGroup>
-    <PropertyGroup>
-        <NoWarn>$(NoWarn);NU1507</NoWarn>
-    </PropertyGroup>
+  <PropertyGroup>
+    <NoWarn>$(NoWarn);NU1507</NoWarn>
+  </PropertyGroup>
 </Project>
