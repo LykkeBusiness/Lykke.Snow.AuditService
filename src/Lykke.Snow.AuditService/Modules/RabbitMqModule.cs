@@ -2,7 +2,9 @@
 // See the LICENSE file in the project root for more information.
 
 using System;
+
 using Autofac;
+
 using Lykke.RabbitMqBroker;
 using Lykke.RabbitMqBroker.Subscriber;
 using Lykke.Snow.AuditService.MessageHandlers;
@@ -18,22 +20,18 @@ namespace Lykke.Snow.AuditService.Modules
 
         public RabbitMqModule(AuditServiceSettings auditServiceSettings)
         {
-            _rfqEventSubscriberSettings = 
-                auditServiceSettings.Subscribers.RfqEventSubscriber ?? 
+            _rfqEventSubscriberSettings =
+                auditServiceSettings.Subscribers.RfqEventSubscriber ??
                 throw new InvalidOperationException("RfqEventSubscriber settings are not configured");
-        }  
+        }
 
         protected override void Load(ContainerBuilder builder)
         {
             builder.AddRabbitMqConnectionProvider();
-            
-            builder.AddRabbitMqListener<RfqEvent, RfqEventHandler>(_rfqEventSubscriberSettings,
-                opt =>
-                {
-                    opt.SerializationFormat = SerializationFormat.Json;
-                    opt.ShareConnection = true;
-                    opt.SubscriptionTemplate = SubscriptionTemplate.NoLoss;
-                });
+
+            builder.AddRabbitMqListener<RfqEvent, RfqEventHandler>(_rfqEventSubscriberSettings)
+                .AddOptions(RabbitMqListenerOptions<RfqEvent>.Json.NoLoss)
+                .AutoStart();
         }
     }
 }

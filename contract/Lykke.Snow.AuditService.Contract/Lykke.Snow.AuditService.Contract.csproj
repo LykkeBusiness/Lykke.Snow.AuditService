@@ -1,11 +1,14 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>net6.0</TargetFramework>
+        <TargetFramework>net8.0</TargetFramework>
         <LangVersion>8.0</LangVersion>
         <Version>1.4.0</Version>
         <Nullable>enable</Nullable>
         <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+        <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
     </PropertyGroup>
-
+    <PropertyGroup>
+        <NoWarn>$(NoWarn);NU1507</NoWarn>
+    </PropertyGroup>
 </Project>
