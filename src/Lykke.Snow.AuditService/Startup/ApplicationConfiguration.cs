@@ -1,9 +1,15 @@
 // Copyright (c) 2023 Lykke Corp.
 // See the LICENSE file in the project root for more information.
 
+using System;
+
 using Lykke.Middlewares;
+using Lykke.Snow.Common.AssemblyLogging;
+
 using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 
 namespace Lykke.Snow.AuditService.Startup
 {
@@ -29,6 +35,23 @@ namespace Lykke.Snow.AuditService.Startup
              app.UseSwaggerUI(a => a.SwaggerEndpoint("/swagger/v1/swagger.json", Program.ApiName));
 
              app.MapControllers();
+             
+             app.Lifetime.ApplicationStarted.Register(() =>
+             {
+                 var logger = app.Services.GetRequiredService<ILogger<Program>>();
+                 try
+                 {
+                     app.Services.GetRequiredService<AssemblyLogger>()
+                         .StartLogging();
+                 }
+                 catch (Exception e)
+                 {
+                     logger.LogError(e, "Failed to start");
+                     app.Lifetime.StopApplication();
+                     return;
+                 }
+                 logger.LogInformation($"{nameof(Startup)} started");
+             });
 
              return app;
         }
