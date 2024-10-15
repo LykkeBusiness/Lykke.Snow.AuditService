@@ -5,6 +5,7 @@ using System;
 using Lykke.SettingsReader;
 using Lykke.Snow.AuditService.MappingProfiles;
 using Lykke.Snow.AuditService.Settings;
+using Lykke.Snow.Common.AssemblyLogging;
 using Lykke.Snow.Common.Startup;
 using Lykke.Snow.Common.Startup.ApiKey;
 using Microsoft.Extensions.DependencyInjection;
@@ -21,6 +22,7 @@ namespace Lykke.Snow.AuditService.Startup
             if(settings.CurrentValue.AuditService == null)
                 throw new ArgumentException($"{nameof(AppSettings.AuditService)} settings is not configured!");
 
+            services.AddAssemblyLogger();
             services.AddSingleton(settings.CurrentValue.AuditService);
             services
                 .AddApplicationInsightsTelemetry()
