@@ -1,9 +1,15 @@
 // Copyright (c) 2023 Lykke Corp.
 // See the LICENSE file in the project root for more information.
 
+using System;
+
 using Lykke.Middlewares;
+using Lykke.Snow.Common.AssemblyLogging;
+
 using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 
 namespace Lykke.Snow.AuditService.Startup
 {
