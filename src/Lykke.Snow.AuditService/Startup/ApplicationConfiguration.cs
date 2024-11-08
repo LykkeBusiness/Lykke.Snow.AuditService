@@ -4,6 +4,7 @@
 using System;
 
 using Lykke.Middlewares;
+using Lykke.SettingsReader.SettingsTemplate;
 using Lykke.Snow.Common.AssemblyLogging;
 
 using Microsoft.AspNetCore.Builder;
@@ -35,6 +36,7 @@ namespace Lykke.Snow.AuditService.Startup
              app.UseSwaggerUI(a => a.SwaggerEndpoint("/swagger/v1/swagger.json", Program.ApiName));
 
              app.MapControllers();
+             app.AddSettingsTemplateEndpoint();
 
              return app;
         }
