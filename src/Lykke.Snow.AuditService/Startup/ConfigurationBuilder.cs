@@ -5,6 +5,7 @@ using System.IO;
 using System.Reflection;
 using Lykke.Logs.Serilog;
 using Lykke.SettingsReader;
+using Lykke.SettingsReader.ConfigurationProvider;
 using Lykke.Snow.AuditService.Settings;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
@@ -25,6 +26,7 @@ namespace Lykke.Snow.AuditService.Startup
             var configuration = builder.Configuration
                 .AddSerilogJson(builder.Environment)
                 .SetBasePath(builder.Environment.ContentRootPath)
+                .AddHttpSourceConfiguration()
                 .AddUserSecrets<Program>()
                 .AddEnvironmentVariables()
                 .Build();

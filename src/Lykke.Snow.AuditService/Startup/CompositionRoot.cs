@@ -3,6 +3,7 @@
 
 using System;
 using Lykke.SettingsReader;
+using Lykke.SettingsReader.SettingsTemplate;
 using Lykke.Snow.AuditService.MappingProfiles;
 using Lykke.Snow.AuditService.Settings;
 using Lykke.Snow.Common.AssemblyLogging;
@@ -50,6 +51,8 @@ namespace Lykke.Snow.AuditService.Startup
                 .AddSwaggerGenNewtonsoftSupport();
 
             services.AddAutoMapper(typeof(MappingProfile).Assembly);
+
+            services.AddSettingsTemplateGenerator();
 
             return services;
         }
