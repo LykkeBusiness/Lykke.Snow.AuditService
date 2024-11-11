@@ -28,7 +28,7 @@
     <Folder Include="Models\" />
   </ItemGroup>
   <PropertyGroup>
-      <!-- NU1903 disabled for now, should be removed after refit update -->
-    <NoWarn>$(NoWarn);NU1507;NU1903</NoWarn>
+      <!-- NU1903;NU1904; disabled for now, should be removed after refit update -->
+    <NoWarn>$(NoWarn);NU1507;NU1903;NU1904;</NoWarn>
   </PropertyGroup>
 </Project>
