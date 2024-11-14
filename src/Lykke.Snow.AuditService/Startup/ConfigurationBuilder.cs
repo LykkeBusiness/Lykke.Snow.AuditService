@@ -1,6 +1,7 @@
 // Copyright (c) 2023 Lykke Corp.
 // See the LICENSE file in the project root for more information.
 
+using System;
 using System.IO;
 using System.Reflection;
 using Lykke.Logs.Serilog;
@@ -23,13 +24,18 @@ namespace Lykke.Snow.AuditService.Startup
             }
             builder.Environment.ContentRootPath = assemblyFolder;
 
-            var configuration = builder.Configuration
+            var configurationBuilder = builder.Configuration
                 .AddSerilogJson(builder.Environment)
                 .SetBasePath(builder.Environment.ContentRootPath)
-                .AddHttpSourceConfiguration()
                 .AddUserSecrets<Program>()
-                .AddEnvironmentVariables()
-                .Build();
+                .AddEnvironmentVariables();
+
+            if (Environment.GetEnvironmentVariable("SettingsUrl")?.StartsWith("http") ?? false)
+            {
+                configurationBuilder.AddHttpSourceConfiguration();
+            }
+
+            var configuration = configurationBuilder.Build();
 
             var settingsManager = configuration.LoadSettings<AppSettings>(_ => { });
 
