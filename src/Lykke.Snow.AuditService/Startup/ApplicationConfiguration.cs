@@ -36,7 +36,7 @@ namespace Lykke.Snow.AuditService.Startup
              app.UseSwaggerUI(a => a.SwaggerEndpoint("/swagger/v1/swagger.json", Program.ApiName));
 
              app.MapControllers();
-             app.AddSettingsTemplateEndpoint();
+             app.MapSettingsTemplate();
 
              return app;
         }
