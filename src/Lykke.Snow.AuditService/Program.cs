@@ -10,7 +10,6 @@ namespace Lykke.Snow.AuditService
 {
     internal sealed class Program
     {
-        //test
         public const string ApiName = "Audit";
 
         public static async Task Main(string[] args)
