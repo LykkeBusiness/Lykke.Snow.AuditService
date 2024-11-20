@@ -10,11 +10,12 @@ namespace Lykke.Snow.AuditService
 {
     internal sealed class Program
     {
+        //test
         public const string ApiName = "Audit";
 
         public static async Task Main(string[] args)
         {
-            await StartupWrapper.StartAsync(async() => 
+            await StartupWrapper.StartAsync(async() =>
             {
                 var builder = WebApplication.CreateBuilder(args);
                 var (configuration, settingsManager) = builder.BuildConfiguration();
