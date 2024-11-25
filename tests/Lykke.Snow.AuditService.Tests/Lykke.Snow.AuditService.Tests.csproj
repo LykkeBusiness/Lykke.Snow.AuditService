@@ -21,7 +21,6 @@
     <PackageReference Include="xunit.runner.visualstudio" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\client\Lykke.Snow.AuditService.Client\Lykke.Snow.AuditService.Client.csproj" />
     <ProjectReference Include="..\..\src\Lykke.Snow.AuditService\Lykke.Snow.AuditService.csproj" />
     <ProjectReference
       Include="..\..\src\Lykke.Snow.AuditService.DomainServices\Lykke.Snow.AuditService.DomainServices.csproj" />
