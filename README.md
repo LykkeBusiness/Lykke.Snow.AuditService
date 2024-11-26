@@ -45,7 +45,6 @@ All variables and value constraints are default. For instance, to set host URL t
 {
   "APP_UID": "Integer",
   "ASPNETCORE_ENVIRONMENT": "String",
-  "ASPNETCORE_ENVIRONMENT_TEST1": "String",
   "AuditService": {
     "AuditServiceClient": {
       "ApiKey": "String",
@@ -70,7 +69,6 @@ All variables and value constraints are default. For instance, to set host URL t
     }
   },
   "ENVIRONMENT": "String",
-  "ENVIRONMENT_TEST1": "String",
   "serilog": {
     "Enrich": [
       "String"
