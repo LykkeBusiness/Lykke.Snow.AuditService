@@ -98,8 +98,7 @@ All variables and value constraints are default. For instance, to set host URL t
       }
     ]
   },
-  "TZ": "String",
-  "TZ123": "String"
+  "TZ": "String"
 }
 ```
 <!-- MARKDOWN-AUTO-DOCS:END -->
